@@ -118,7 +118,7 @@ SELECT
 		WHEN '7' THEN 'Aguardando NF'
 	END AS analise_financeiro,
 	CONVERT(DATE,ada.ADA_X_DLIB) AS data_liberacao,
-	ada.ADA_X_KWP AS kwp,
+	CONVERT(FLOAT,ada.ADA_X_KWP) AS kwp,
 	CONVERT(DATE,ada.ADA_X_DTRE) AS data_recebimento,
 	ada.ADA_VEND2 AS cod_vendedor2,
 	ada.ADA_VEND3 AS cod_vendedor3,
@@ -126,6 +126,14 @@ SELECT
 	ada.ADA_XFLUIG AS proposta_fluig,
 	ada.ADA_X_EST AS uf,
 	ada.ADA_X_MUN AS municipio,
+	CASE 
+        WHEN ada.ADA_X_EST IN ('AC','AM','AP','PA','RO','RR','TO') THEN 'Norte'
+        WHEN ada.ADA_X_EST IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
+        WHEN ada.ADA_X_EST IN ('DF','GO','MT','MS') THEN 'Centro-Oeste'
+        WHEN ada.ADA_X_EST IN ('ES','MG','RJ','SP') THEN 'Sudeste'
+        WHEN ada.ADA_X_EST IN ('PR','RS','SC') THEN 'Sul'
+    ELSE 'Região não identificada'
+    END AS regiao,
 	ada.ADA_X_STAF AS cod_analise_credito,
 	CASE ada.ADA_X_STAF 
 		WHEN '0' THEN 'Não Aplicavel'
