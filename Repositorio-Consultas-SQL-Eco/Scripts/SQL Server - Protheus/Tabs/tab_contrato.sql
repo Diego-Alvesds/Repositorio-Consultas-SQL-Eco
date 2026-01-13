@@ -2,7 +2,7 @@
 SELECT 
 	ada.ADA_FILIAL AS filial,
 	ada.ADA_NUMCTR AS contrato,
-	CONCAT(ada.ADA_FILIAL, '-',ada.ADA_NUMCTR) AS filial_contrato,
+	TRIM(CONCAT(ada.ADA_FILIAL,ada.ADA_NUMCTR)) AS filial_contrato,
 	CONCAT(ada.ADA_FILIAL, '-',ada.ADA_CONDPG) AS filial_codpag,
 	CONVERT(DATE,ada.ADA_EMISSA) AS dt_emissao_contrato,
 	ada.ADA_TPCTRT AS cod_tipo_contrato,
@@ -118,7 +118,7 @@ SELECT
 		WHEN '7' THEN 'Aguardando NF'
 	END AS analise_financeiro,
 	CONVERT(DATE,ada.ADA_X_DLIB) AS data_liberacao,
-	CONVERT(FLOAT,ada.ADA_X_KWP) AS kwp,
+	CONVERT(FLOAT, ada.ADA_X_KWP) AS kwp,
 	CONVERT(DATE,ada.ADA_X_DTRE) AS data_recebimento,
 	ada.ADA_VEND2 AS cod_vendedor2,
 	ada.ADA_VEND3 AS cod_vendedor3,
@@ -160,3 +160,7 @@ AND ada.ADA_X_STAN NOT IN('7')
 AND ada.ADA_X_STAD NOT IN('5')
 AND ada.ADA_TPCTRT IN('1','2','5','7','9','A','B','C',' ')
 AND ada.ADA_FILIAL <> '0112'
+
+
+
+
