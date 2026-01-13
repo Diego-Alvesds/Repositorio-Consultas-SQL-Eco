@@ -16,7 +16,7 @@ SELECT
     ADB_QTDEMP AS qtd_emp,
     ADB_CODCLI AS cod_cliente,
     ADB_LOJCLI AS cod_loja_cliente,
-    ADB_XKWP AS kwp,
+    CONVERT(FLOAT, ADB_XKWP) AS kwp,
     ADB_X_TIPO AS cod_tipo_venda,
     CASE ADB_X_TIPO
         WHEN '' THEN 'Gerador'
