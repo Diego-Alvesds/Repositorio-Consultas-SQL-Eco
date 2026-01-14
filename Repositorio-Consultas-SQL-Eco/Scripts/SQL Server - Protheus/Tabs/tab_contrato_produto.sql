@@ -10,6 +10,7 @@ SELECT
     ADB_QUANT AS qtd_produto,
     ADB_PRCVEN AS preco_venda,
     ADB_TOTAL AS preco_venda_total,
+    ADB_PEDCOB AS numero_pedido,
     ADB_TES AS tes,
     ADB_TESCOB AS tes_cobranca,
     ADB_LOCAL AS armazem,
