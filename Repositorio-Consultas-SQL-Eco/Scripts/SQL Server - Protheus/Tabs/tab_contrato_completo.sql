@@ -25,6 +25,7 @@ SELECT
 	END AS tipo_contrato,
 	ada.ADA_CODCLI AS cod_cliente,
 	ada.ADA_LOJCLI AS cod_loja,
+	TRIM(CONCAT(ada.ADA_CODCLI,ada.ADA_LOJCLI)) AS cod_cliente_loja,
 	ada.ADA_CONDPG AS cod_condicao_pagamento,
 	ada.ADA_XTPTLH AS cod_tipo_telhado,
 	CASE ada.ADA_XTPTLH
