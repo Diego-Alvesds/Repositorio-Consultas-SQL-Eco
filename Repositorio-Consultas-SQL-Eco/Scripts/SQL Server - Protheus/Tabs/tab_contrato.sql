@@ -21,6 +21,8 @@ SELECT
 		 WHEN 'C' THEN 'Venda Avulsa'
 		 WHEN 'D' THEN 'Venda FCO'
 		 WHEN 'E' THEN 'Desconto em folha'
+		 WHEN 'F' THEN 'Venda Mobilidade'
+		 WHEN 'G' THEN 'Locação'
 		 WHEN ' ' THEN 'Venda'
 	END AS tipo_contrato,
 	ada.ADA_CODCLI AS cod_cliente,
@@ -159,7 +161,7 @@ FROM VW_ADA010 ada
 WHERE 1 = 1
 AND ada.ADA_X_STAN NOT IN('7')
 AND ada.ADA_X_STAD NOT IN('5')
-AND ada.ADA_TPCTRT IN('1','2','5','7','9','A','B','C',' ')
+AND ada.ADA_TPCTRT IN('1','2','5','7','9','A','B','C','F','G',' ')
 AND ada.ADA_FILIAL <> '0112'
 
 
