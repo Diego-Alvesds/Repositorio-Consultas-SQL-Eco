@@ -11,7 +11,7 @@ SELECT
     m30.codigoUnidade AS cod_unidade,
     m30.descricaoUnidade AS UNIDADE,
     CONVERT(m30.dataCriacao, DATE) AS DATA_CRIACAO,
-    CONVERT(m30.dataAtualizacao, DATE) AS DATA_ATUALIZACAO,
+    CONVERT(m30.dataAtualizacao, DATETIME) AS DATA_ATUALIZACAO,
     CAST(m30.potenciaSimul AS DECIMAL (6,2)) AS POTENCIA,
     m30.vendedor_protheus AS VENDEDOR_PROTHEUS,
     m30.executivo_protheus AS EXECUTIVO_PROTHEUS, 
