@@ -23,4 +23,4 @@ WHERE 1 = 1
     AND d.VERSAO_ATIVA = 1
     AND m30.atividadeDesc <> ''
     AND m30.atividade <> '15'
-    AND m30.dataAtualizacao >= DATE_FORMAT(CURRENT_DATE - INTERVAL 2 MONTH, '%Y-%m-01')
+    AND m30.dataAtualizacao >= DATE_FORMAT(CURRENT_DATE - INTERVAL 3 MONTH, '%Y-%m-01')
