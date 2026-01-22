@@ -6,6 +6,7 @@
     CONVERT(m30.dataCriacao, DATE) AS data_criacao,
     CONVERT(m30.dataAtualizacao, DATE) AS data_atualizacao,
     m30.atividadeDesc AS status_projeto,
+    CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_venda,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
     m30.descricaoUnidade AS unidade,
     m30.vendedor_protheus AS vendedor_protheus,
@@ -23,4 +24,4 @@ WHERE 1 = 1
     AND d.VERSAO_ATIVA = 1
     AND m30.atividadeDesc <> ''
     AND m30.atividade <> '15'
-    AND m30.dataAtualizacao >= DATE_FORMAT(CURRENT_DATE - INTERVAL 3 MONTH, '%Y-%m-01')
+    AND m30.dataAtualizacao BETWEEN '2025-01-01 00:00:00' AND '2026-12-31 23:59:59'
