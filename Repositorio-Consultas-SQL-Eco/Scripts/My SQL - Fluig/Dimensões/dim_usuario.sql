@@ -1,10 +1,11 @@
 SELECT
-    FULL_NAME AS nome_usuario,
-    EMAIL AS email,
-    USER_CODE AS cod_usuario,
-    ut.LOGIN AS login
+	FULL_NAME AS nome_usuario,
+	EMAIL AS email,
+	USER_CODE AS cod_usuario,
+	ut.LOGIN AS login
 FROM
-    FDN_USERTENANT AS ut
-    INNER JOIN FDN_USER u ON u.USER_ID = ut.USER_ID
+	FDN_USERTENANT AS ut
+INNER JOIN FDN_USER u ON
+	u.USER_ID = ut.USER_ID
 WHERE
-    TENANT_ID = 1
+	TENANT_ID = 1

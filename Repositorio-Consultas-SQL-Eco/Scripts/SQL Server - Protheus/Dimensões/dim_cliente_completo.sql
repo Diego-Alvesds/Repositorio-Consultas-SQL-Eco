@@ -11,6 +11,7 @@ SELECT DISTINCT
 	A1_DDD AS ddd,
 	A1_TEL AS telefone,
 	A1_MUN AS municipio,
+	TRIM(CONCAT(TRIM(A1_MUN), ' - ', TRIM(A1_EST))) AS mun_uf,
 	A1_REGIAO AS regiao,
 	A1_DSCREG AS desc_regiao,
 	A1_XCIDADE AS cidade,
