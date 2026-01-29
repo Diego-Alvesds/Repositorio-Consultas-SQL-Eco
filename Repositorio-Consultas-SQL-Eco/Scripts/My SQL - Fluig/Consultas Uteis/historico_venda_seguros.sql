@@ -19,7 +19,8 @@ SELECT
     m55.qtdProdutosAdicionais AS QTD_PRODUTO_ADICIONAL,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorUnitProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_UNIT_PRODUTO_ADICIONAL,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS SUBTOTAL_PRODUTO_ADICIONAL,
-    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.totalProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS TOTAL_PRODUTOS_ADICIONAIS
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.totalProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS TOTAL_PRODUTOS_ADICIONAIS,
+    m30.descontoDado AS PORCENT_DESCONTO
 FROM
     DOCUMENTO d
     JOIN ML001030 m30 ON m30.companyid = d.COD_EMPRESA
