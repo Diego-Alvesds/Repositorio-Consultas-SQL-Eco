@@ -29,7 +29,7 @@ SELECT
 	"(17) 4000-1722" AS telefone_estipulante,
 	m30.nomeRazaoCli AS nome_cliente,
 	m30.nomeRazaoCli AS segurado,
-	m30.documentoIdent AS documento,
+	TRIM(REPLACE(REPLACE(REPLACE(m30.documentoIdent, "/", ""), ".", ""), "-", "")) AS documento,
 	m30.celular AS cel_cliente,
 	m30.enderecoInstalacaoFicha AS rua,
 	m30.numeroInstalacao AS numero,
