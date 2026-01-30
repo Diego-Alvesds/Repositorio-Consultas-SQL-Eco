@@ -1,4 +1,4 @@
-	WITH ClientesAgrupados AS (
+WITH ClientesAgrupados AS (
     SELECT 
 		m30.proposta AS proposta,
 		m30.entradaImputado AS filial,

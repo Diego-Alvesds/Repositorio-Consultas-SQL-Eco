@@ -1,6 +1,7 @@
 
 SELECT 
 	ada.ADA_FILIAL AS filial,
+	ada.ADA_X_UNID AS unidade,
 	ada.ADA_NUMCTR AS contrato,
 	TRIM(CONCAT(ada.ADA_FILIAL,ada.ADA_NUMCTR)) AS filial_contrato,
 	CONCAT(ada.ADA_FILIAL, '-',ada.ADA_CONDPG) AS filial_codpag,
