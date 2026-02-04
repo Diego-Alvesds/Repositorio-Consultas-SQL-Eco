@@ -7,6 +7,17 @@ SELECT
     m30.atividadeDesc AS status_projeto,
     CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_negociacao,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
+    m30.descricaoUnidade AS unidade,
+    m30.cidadeInstalacaoDesc AS cidade,
+    m30.estadoInstalacao AS estado,
+    CASE 
+        WHEN m30.estadoInstalacao IN ('AC','AM','AP','PA','RO','RR','TO') THEN 'Norte'
+        WHEN m30.estadoInstalacao IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
+        WHEN m30.estadoInstalacao IN ('DF','GO','MT','MS') THEN 'Centro-Oeste'
+        WHEN m30.estadoInstalacao IN ('ES','MG','RJ','SP') THEN 'Sudeste'
+        WHEN m30.estadoInstalacao IN ('PR','RS','SC') THEN 'Sul'
+    ELSE 'Região não identificada'
+    END AS regiao,
 	m36.quantidadePromocao AS qtd_promocao,
 	m36.descricaoPromocao AS descricao_promocao,
 	m36.potenciaPromocao AS potencia_promocao,
