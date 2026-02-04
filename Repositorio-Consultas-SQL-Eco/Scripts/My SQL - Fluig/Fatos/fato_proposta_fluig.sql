@@ -109,7 +109,6 @@ SELECT
         WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) <> TRIM(IFNULL(m30.marcaInversorDesc, '')) AND TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
         ELSE 'Venda Avulsa'
     END AS tipo_inversor,
-    m30.formasDePagEfetivadas AS forma_de_pagamento,
     CASE 
         WHEN m30.atividade = '15' THEN 'Sim'
     ELSE 'Não' 
