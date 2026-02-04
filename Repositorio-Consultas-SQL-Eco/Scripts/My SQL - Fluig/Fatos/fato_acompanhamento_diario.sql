@@ -12,7 +12,10 @@
     m30.vendedor_protheus AS vendedor_protheus,
     m30.executivo_protheus AS executivo_protheus,      
     m30.codigoUnidade AS cod_unidade,
-    m30.potenciaSimul AS potencia,
+    CAST(m30.potenciaSimul AS DECIMAL (10,2)) AS potencia,
+    m30.tipoFinanciamentoDesc AS pf_pj,
+    m30.formasDePagEfetivadas AS forma_de_pagamento,
+    m30.classe AS CLASSE,
     CAST(REPLACE(REPLACE(NULLIF(TRIM(LTRIM(REPLACE(m30.valorASerPago, 'R$', ''))), ''), '.', ''),',', '.') AS DECIMAL(10,2)) AS valor_final,
     NOW() AS data_stamp
 FROM ML001030 m30
