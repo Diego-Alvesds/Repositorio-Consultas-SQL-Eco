@@ -10,24 +10,24 @@ SELECT
     m30.descricaoUnidade AS unidade,
     m30.cidadeInstalacaoDesc AS cidade,
     m30.estadoInstalacao AS estado,
-    CASE 
+	CASE 
         WHEN m30.estadoInstalacao IN ('AC','AM','AP','PA','RO','RR','TO') THEN 'Norte'
         WHEN m30.estadoInstalacao IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
         WHEN m30.estadoInstalacao IN ('DF','GO','MT','MS') THEN 'Centro-Oeste'
         WHEN m30.estadoInstalacao IN ('ES','MG','RJ','SP') THEN 'Sudeste'
         WHEN m30.estadoInstalacao IN ('PR','RS','SC') THEN 'Sul'
     ELSE 'Região não identificada'
-    END AS regiao,
+    END AS regiao, 
 	m36.quantidadePromocao AS qtd_promocao,
 	m36.descricaoPromocao AS descricao_promocao,
-	m36.potenciaPromocao AS potencia_promocao,
+	CAST(m36.potenciaPromocao AS DECIMAL (10,2)) AS potencia_promocao,
 	m36.idPromocao AS id_promocao,
 	m36.codigoProdutoPromocao AS cod_produto_promocao,
 	m36.geracaoPromocao AS geracao_promocao,
 	m36.moduloPromocao AS modulo_promocao,
 	m36.inversorPromocao AS inversor_promocao,
-	m36.valorTabelaPromocao AS valor_tabela_promocao,
-	m36.valorPromocao AS valor_desconto_promocao
+	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m36.valorTabelaPromocao, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_tabela_promocao,
+	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m36.valorPromocao, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_desconto_promocao
 FROM DOCUMENTO d
 JOIN ML001030 m30 
 	ON m30.companyid = d.COD_EMPRESA
@@ -42,7 +42,7 @@ WHERE 1 = 1
 	AND d.COD_LISTA = 30
 	AND d.VERSAO_ATIVA = 1
 	AND m36.promocaoEscolhida = 'promocaoEscolhida'
-	AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+	AND m30.dataCriacao BETWEEN '2025-01-01 00:00:00' AND '2026-12-31 23:59:59'
     AND m30.atividadeDesc <> ''
     AND m30.proposta <> '00000NaN'
     AND m30.atividade <> '15'
