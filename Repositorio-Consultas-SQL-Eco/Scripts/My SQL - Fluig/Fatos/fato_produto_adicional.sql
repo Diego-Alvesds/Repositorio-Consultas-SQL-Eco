@@ -27,16 +27,15 @@ SELECT
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS subtotal_produto_adicional,
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.totalProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS total_produtos_adicionais
 FROM DOCUMENTO d
-JOIN ML001030 m30 ON
-	m30.companyid = d.COD_EMPRESA
+JOIN ML001030 m30 
+	ON m30.companyid = d.COD_EMPRESA
 	AND m30.documentid = d.NR_DOCUMENTO
 	AND m30.version = d.NR_VERSAO
-JOIN ML001055 m55 ON
-	m55.companyid = m30.companyid
+JOIN ML001055 m55 
+	ON m55.companyid = m30.companyid
 	AND m55.documentid = m30.documentid
 	AND m55.version = m30.version
-WHERE
-	1 = 1
+WHERE 1 = 1
 	AND d.COD_EMPRESA = 1
 	AND d.COD_LISTA = 30
 	AND d.VERSAO_ATIVA = 1
