@@ -41,11 +41,7 @@ SELECT
     CASE m30.chkFreteFrontline
         WHEN 'true' THEN 'SIM'
         ELSE 'NÃO'
-    END AS frete_frontline,
-    CASE 
-        WHEN m30.atividade = '15' THEN 'Sim'
-    ELSE 'Não' 
-    END AS finalizar_perdida
+    END AS frete_frontline
 FROM DOCUMENTO d
     JOIN ML001030 m30 
     ON m30.companyid = d.COD_EMPRESA
