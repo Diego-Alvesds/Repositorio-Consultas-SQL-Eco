@@ -4,6 +4,7 @@ SELECT
     m30.contrato_protheus AS contrato,
     CONVERT(m30.dataCriacao, DATE) AS data_criacao,
     CONVERT(m30.dataAtualizacao, DATE) AS data_atualizacao,
+    m30.atividade AS cod_status_projeto,
     m30.atividadeDesc AS status_projeto,
     m30.tipoFinanciamentoDesc AS pf_pj,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
