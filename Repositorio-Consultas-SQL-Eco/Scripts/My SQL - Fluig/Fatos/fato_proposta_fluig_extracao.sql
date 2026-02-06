@@ -131,6 +131,10 @@ SELECT
         WHEN 'true' THEN 'SIM'
         ELSE 'NÃO'
     END AS frete_frontline,
+    CASE 
+        WHEN m30.atividade = '15' THEN 'Sim'
+    ELSE 'Não' 
+    END AS finalizar_perdida,
     NOW() AS data_stamp
 FROM ML001030 m30
 JOIN DOCUMENTO d 

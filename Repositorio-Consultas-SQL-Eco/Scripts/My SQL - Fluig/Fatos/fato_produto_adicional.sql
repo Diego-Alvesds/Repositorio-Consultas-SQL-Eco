@@ -30,7 +30,22 @@ SELECT
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.totalProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS total_produtos_adicionais,
 	CAST(m55.qtdProdutosAdicionais * (CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorUnitProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)))AS DECIMAL(10,2)) AS total_produtos_adicionais_real,
 	m55.produtoAdicionalEntregue AS produto_entregue,
-	m55.produtoBonificado AS produto_bonificado
+	m55.produtoBonificado AS produto_bonificado,
+	m30.formasDePagEfetivadas AS forma_de_pagamento,
+    m30.chkFreteComercial AS cod_frete_prioridade_comercial,
+    CASE m30.chkFreteComercial
+        WHEN 'true' THEN 'SIM'
+        ELSE 'NÃO'
+    END AS frete_prioridade_comercial,
+    m30.chkFreteFrontline AS cod_frete_frontline,
+    CASE m30.chkFreteFrontline
+        WHEN 'true' THEN 'SIM'
+        ELSE 'NÃO'
+    END AS frete_frontline,
+    CASE 
+        WHEN m30.atividade = '15' THEN 'Sim'
+    ELSE 'Não' 
+    END AS finalizar_perdida
 FROM DOCUMENTO d
     JOIN ML001030 m30 
     ON m30.companyid = d.COD_EMPRESA
