@@ -4,7 +4,7 @@ SELECT
     m30.contrato_protheus AS contrato,
     CONVERT(m30.dataCriacao, DATE) AS data_criacao,
     CONVERT(m30.dataAtualizacao, DATE) AS data_atualizacao,
-    m30.atividade AS cod_status_projeto,
+    CAST(m30.atividade AS SIGNED) AS cod_status_projeto,
     m30.atividadeDesc AS status_projeto,
     m30.tipoFinanciamentoDesc AS pf_pj,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
@@ -139,7 +139,7 @@ WHERE 1 = 1
     AND d.COD_EMPRESA = 1 
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+    AND m30.dataCriacao BETWEEN '2026-02-04 00:00:00' AND '2026-02-05 23:59:59'
     AND m30.atividadeDesc <> ''
     AND m30.proposta <> '00000NaN'
     
