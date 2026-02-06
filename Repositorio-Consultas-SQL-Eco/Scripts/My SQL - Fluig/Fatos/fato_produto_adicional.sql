@@ -7,6 +7,8 @@ SELECT
     m30.atividadeDesc AS status_projeto,
     CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_negociacao,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
+    m30.vendedor_protheus AS cod_vendedor_protheus,
+	m30.executivo_protheus AS cod_executivo_protheus, 
     m30.descricaoUnidade AS unidade,
     m30.cidadeInstalacaoDesc AS cidade,
     m30.estadoInstalacao AS estado,
@@ -25,21 +27,44 @@ SELECT
 	m55.qtdProdutosAdicionais AS qtd_produto_adicional,
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorUnitProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_unit_produto_adicional,
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS subtotal_produto_adicional,
-	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.totalProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS total_produtos_adicionais
+	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.totalProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS total_produtos_adicionais,
+	CAST(m55.qtdProdutosAdicionais * (CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorUnitProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)))AS DECIMAL(10,2)) AS total_produtos_adicionais_real,
+	m55.produtoAdicionalEntregue AS produto_entregue,
+	m55.produtoBonificado AS produto_bonificado
 FROM DOCUMENTO d
-JOIN ML001030 m30 
-	ON m30.companyid = d.COD_EMPRESA
-	AND m30.documentid = d.NR_DOCUMENTO
-	AND m30.version = d.NR_VERSAO
-JOIN ML001055 m55 
-	ON m55.companyid = m30.companyid
-	AND m55.documentid = m30.documentid
-	AND m55.version = m30.version
+    JOIN ML001030 m30 
+    ON m30.companyid = d.COD_EMPRESA
+    AND m30.documentid = d.NR_DOCUMENTO
+    AND m30.version = d.NR_VERSAO
+    JOIN ML001055 m55 
+    ON m55.companyid = m30.companyid
+    AND m55.documentid = m30.documentid
+    AND m55.version = m30.version
 WHERE 1 = 1
-	AND d.COD_EMPRESA = 1
-	AND d.COD_LISTA = 30
-	AND d.VERSAO_ATIVA = 1
-	AND m30.atividadeDesc <> ''
-	AND m30.proposta <> '00000NaN'
-	AND m30.atividade <> '15'
-	AND m30.dataCriacao BETWEEN '2024-01-01 00:00:00' AND '2026-12-31 23:59:59'
+    AND d.COD_EMPRESA = 1
+    AND d.COD_LISTA = 30
+    AND d.VERSAO_ATIVA = 1
+    AND m30.atividade <> '15'
+    AND m30.dataAtualizacao BETWEEN '2025-01-01 00:00:00' AND '2026-12-31 23:59:59'
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
