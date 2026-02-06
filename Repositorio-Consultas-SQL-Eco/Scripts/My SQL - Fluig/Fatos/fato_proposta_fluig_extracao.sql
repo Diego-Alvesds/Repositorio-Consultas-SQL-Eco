@@ -139,7 +139,7 @@ WHERE 1 = 1
     AND d.COD_EMPRESA = 1 
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND m30.dataCriacao BETWEEN '2026-02-04 00:00:00' AND '2026-02-05 23:59:59'
+    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
     AND m30.atividadeDesc <> ''
     AND m30.proposta <> '00000NaN'
     
