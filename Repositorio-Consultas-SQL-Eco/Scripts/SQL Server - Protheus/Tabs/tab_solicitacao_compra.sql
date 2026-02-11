@@ -1,0 +1,27 @@
+SELECT 
+	C1_FILIAL AS filial,
+	C1_NUM AS num_sc,
+	C1_PEDIDO AS pedido_compra,
+	C1_ITEM AS item,
+	C1_PRODUTO AS cod_produto,
+	C1_DESCRI AS descricao_produto,
+	C1_UM AS un_medida,
+	C1_QUANT AS quantidade,
+	C1_PRECO AS preco,
+	C1_TOTAL AS vl_total,
+	C1_EMISSAO AS data_emissao_sc,
+	C1_CC AS centro_custo,
+	C1_DATPRF AS data_previsao_entrega,
+	C1_LOCAL AS armazem,
+	C1_SOLICIT AS solicitante,
+	C1_QUJE AS qtd_solicitada,
+	C1_FORNECE AS cod_fornecedor,
+	C1_LOJA AS cod_loja,
+	C1_ITEMPED AS cod_item_pedido,
+	C1_USER AS cod_comprador,
+	C1_FILENT AS filial_entrega,
+	C1_VUNIT AS vl_unit,
+	C1_X_DTAPR AS data_aprovacao_sc,
+	DATA_ATUALIZACAO 
+FROM SC1010
+WHERE 1 = 1 

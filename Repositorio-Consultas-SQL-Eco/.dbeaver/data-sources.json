@@ -1,0 +1,60 @@
+{
+	"folders": {},
+	"connections": {
+		"microsoft-19bdb81019c-2bd8d8faefc55f02": {
+			"provider": "sqlserver",
+			"driver": "microsoft",
+			"name": "master",
+			"save-password": true,
+			"configuration": {
+				"host": "10.1.100.120",
+				"port": "1433",
+				"database": "master",
+				"url": "jdbc:sqlserver://;serverName\u003d10.1.100.120;databaseName\u003dmaster",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"provider-properties": {
+					"@dbeaver-show-all-schemas@": "true",
+					"sslTrustServerCertificate": "true"
+				},
+				"auth-model": "sqlserver_database"
+			}
+		},
+		"mysql8-19bdb8572e9-51d26ab2ebb27bba": {
+			"provider": "mysql",
+			"driver": "mysql8",
+			"name": "C4WC2E_153784_FL_PD",
+			"save-password": true,
+			"configuration": {
+				"host": "189.126.147.74",
+				"port": "3306",
+				"database": "C4WC2E_153784_FL_PD",
+				"url": "jdbc:mysql://189.126.147.74:3306/C4WC2E_153784_FL_PD",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"provider-properties": {
+					"@dbeaver-show-all-dbs@": "true"
+				},
+				"auth-model": "native"
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Desenvolvimento",
+			"color": "255,255,255",
+			"description": "Banco de dados de desenvolvimento",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false,
+			"smart-commit": false,
+			"smart-commit-recover": true,
+			"auto-close-transactions": true,
+			"close-transactions-period": 1800,
+			"auto-close-connections": true,
+			"close-connections-period": 14400
+		}
+	}
+}

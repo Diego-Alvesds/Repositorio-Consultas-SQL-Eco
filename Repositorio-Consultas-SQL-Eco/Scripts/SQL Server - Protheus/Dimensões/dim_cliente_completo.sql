@@ -1,0 +1,27 @@
+SELECT DISTINCT
+	A1_FILIAL AS filial,
+	A1_COD AS cod_cliente,
+	A1_LOJA AS loja,
+	TRIM(CONCAT(A1_COD,A1_LOJA)) AS cod_cliente_loja,
+	A1_NOME AS nome_cliente,
+	A1_PESSOA AS tipo_cliente,
+	A1_NREDUZ AS nome_cliente_reduzido,
+	A1_END AS end_cliente,
+	A1_EST AS uf,
+	A1_DDD AS ddd,
+	A1_TEL AS telefone,
+	A1_MUN AS municipio,
+	TRIM(CONCAT(TRIM(A1_MUN), ' - ', TRIM(A1_EST))) AS mun_uf,
+	A1_REGIAO AS regiao,
+	A1_DSCREG AS desc_regiao,
+	A1_XCIDADE AS cidade,
+	A1_EMAIL AS email,
+	A1_CGC AS documento,
+	A1_ENDENT AS rua_entrega,
+	A1_ESTE AS uf_entrega,
+	A1_BAIRROE AS bairro_entrega,
+	A1_NUMEROE AS num_end,
+	A1_XCEPE AS cep_entrega,
+	A1_BAIRRO AS bairro
+FROM SA1010
+WHERE 1 = 1
