@@ -4,7 +4,8 @@
     statusHistoricoDe AS HISTORICO_STATUS_DE,
     statusHistorico AS HISTORICO_STATUS_PARA,
     nomeUsuarioHistorico AS USUARIO_HISTORICO_STATUS,
-    matriculaUsuarioHistorico AS MATRICULA_HISTORICO_STATUS
+    matriculaUsuarioHistorico AS MATRICULA_HISTORICO_STATUS,
+    NOW() AS data_stamp
 FROM 
     ML001030 m30
     JOIN DOCUMENTO d ON d.COD_REG_LISTA = m30.ID
