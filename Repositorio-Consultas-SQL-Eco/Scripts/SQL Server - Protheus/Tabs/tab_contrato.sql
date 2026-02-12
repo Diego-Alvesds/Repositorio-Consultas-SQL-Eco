@@ -5,7 +5,7 @@ SELECT
 	ada.ADA_NUMCTR AS contrato,
 	TRIM(CONCAT(ada.ADA_FILIAL,ada.ADA_NUMCTR)) AS filial_contrato,
 	CONCAT(ada.ADA_FILIAL, '-',ada.ADA_CONDPG) AS filial_codpag,
-	CONVERT(DATE,ada.ADA_EMISSA) AS dt_emissao_contrato,
+	NULLIF(CONVERT(DATE,ada.ADA_EMISSA), '1900-01-01') AS dt_emissao_contrato,
 	ada.ADA_TPCTRT AS cod_tipo_contrato,
 	CASE ADA_TPCTRT
 		 WHEN '1' THEN 'Venda' 
@@ -91,7 +91,7 @@ SELECT
 	END AS tensao,
 	ada.ADA_XVEND2 AS nome_vendedor2,
 	ada.ADA_XVEND3 AS nome_vendedor3,
-	CONVERT(DATE,ada.ADA_X_DTNG) AS data_negociacao,
+	NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01') AS data_negociacao,
 	ada.ADA_X_STAN AS cod_status_negociacao,
 	CASE ada.ADA_X_STAN
 		WHEN '0' THEN 'Solic Ra'
@@ -121,12 +121,12 @@ SELECT
 		WHEN '6' THEN 'Aguardando liberação comercial'
 		WHEN '7' THEN 'Aguardando NF'
 	END AS analise_financeiro,
-	CONVERT(DATE,ada.ADA_X_DLIB) AS data_liberacao,
+	NULLIF(CONVERT(DATE,ada.ADA_X_DLIB), '1900-01-01') AS data_liberacao,
 	CONVERT(FLOAT, ada.ADA_X_KWP) AS kwp,
-	CONVERT(DATE,ada.ADA_X_DTRE) AS data_recebimento,
+	NULLIF(CONVERT(DATE,ada.ADA_X_DTRE), '1900-01-01') AS data_recebimento,
 	ada.ADA_VEND2 AS cod_vendedor2,
 	ada.ADA_VEND3 AS cod_vendedor3,
-	CONVERT(DATE,ada.ADA_X_PRZC) AS prazo_contrato,
+	NULLIF(CONVERT(DATE,ada.ADA_X_PRZC), '1900-01-01') AS prazo_contrato,
 	ada.ADA_XFLUIG AS proposta_fluig,
 	ada.ADA_X_EST AS uf,
 	ada.ADA_X_MUN AS municipio,
@@ -146,9 +146,9 @@ SELECT
 		WHEN '3' THEN 'Em Análise'
 		WHEN '4' THEN 'Aguardando Documentação'
 	END AS analise_credito,
-	CONVERT(DATE,ada.ADA_X_DTCO) AS data_conf_entrega,
-	CONVERT(DATE,ada.ADA_X_DTLE) AS data_libera_entrega,
-	CONVERT(DATE,ada.ADA_X_DTN1) AS data_negociao_e,
+	NULLIF(CONVERT(DATE,ada.ADA_X_DTCO), '1900-01-01') AS data_conf_entrega,
+	NULLIF(CONVERT(DATE,ada.ADA_X_DTLE), '1900-01-01') AS data_libera_entrega,
+	NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') AS data_negociao_e,
 	ada.ADA_X_PRZ AS prazo_dias,
 	ada.ADA_X_VLOR AS vl_proposta,
 	CASE ada.ADA_X_LINV
