@@ -93,6 +93,11 @@ SELECT
 	ada.ADA_XVEND2 AS nome_vendedor2,
 	ada.ADA_XVEND3 AS nome_vendedor3,
 	NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01') AS data_negociacao,
+	NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') AS data_negociao_e,
+	CASE
+		WHEN NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') <> '' THEN NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01')
+		ELSE NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01')
+	END AS data_negociacao2,
 	ada.ADA_X_STAN AS cod_status_negociacao,
 	CASE ada.ADA_X_STAN
 		WHEN '0' THEN 'Solic Ra'
@@ -148,7 +153,6 @@ SELECT
 	END AS analise_credito,
 	NULLIF(CONVERT(DATE,ada.ADA_X_DTCO), '1900-01-01') AS data_conf_entrega,
 	NULLIF(CONVERT(DATE,ada.ADA_X_DTLE), '1900-01-01') AS data_libera_entrega,
-	NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') AS data_negociao_e,
 	ada.ADA_X_PRZ AS prazo_dias,
 	ada.ADA_X_VLOR AS vl_proposta,
 	CASE ada.ADA_X_LINV
