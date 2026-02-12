@@ -92,12 +92,12 @@ SELECT
 	END AS tensao,
 	ada.ADA_XVEND2 AS nome_vendedor2,
 	ada.ADA_XVEND3 AS nome_vendedor3,
-	NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01') AS data_negociacao,
+	NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01') AS data_negociacao_real,
 	NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') AS data_negociao_e,
 	CASE
 		WHEN NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') <> '' THEN NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01')
 		ELSE NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01')
-	END AS data_negociacao2,
+	END AS data_negociacao,
 	ada.ADA_X_STAN AS cod_status_negociacao,
 	CASE ada.ADA_X_STAN
 		WHEN '0' THEN 'Solic Ra'
