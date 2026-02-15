@@ -6,7 +6,6 @@ SELECT
 	ada.ADA_XFLUIG AS proposta_fluig,
 	TRIM(CONCAT(ada.ADA_FILIAL,ada.ADA_NUMCTR)) AS filial_contrato,
 	CONCAT(ada.ADA_FILIAL, '-',ada.ADA_CONDPG) AS filial_codpag,
-	NULLIF(CONVERT(DATE,ada.ADA_EMISSA), '1900-01-01') AS dt_emissao_contrato,
 	ada.ADA_TPCTRT AS cod_tipo_contrato,
 	CASE ADA_TPCTRT
 		 WHEN '1' THEN 'Venda' 
@@ -94,9 +93,10 @@ SELECT
 	ada.ADA_XVEND3 AS nome_vendedor3,
 	NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01') AS data_negociacao_real,
 	NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') AS data_negociao_e,
+	NULLIF(CONVERT(DATE,ada.ADA_EMISSA), '1900-01-01') AS dt_emissao_contrato,
 	CASE
 		WHEN NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') <> '' THEN NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01')
-		ELSE NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01')
+		ELSE ISNULL((NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01')), NULLIF(CONVERT(DATE,ada.ADA_EMISSA), '1900-01-01'))  
 	END AS data_negociacao,
 	ada.ADA_X_STAN AS cod_status_negociacao,
 	CASE ada.ADA_X_STAN
