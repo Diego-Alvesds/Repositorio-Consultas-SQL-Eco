@@ -16,7 +16,7 @@
     m30.tipoFinanciamentoDesc AS pf_pj,
     m30.formasDePagEfetivadas AS forma_de_pagamento,
     m30.classe AS CLASSE,
-    CAST(REPLACE(REPLACE(NULLIF(TRIM(LTRIM(REPLACE(m30.valorASerPago, 'R$', ''))), ''), '.', ''),',', '.') AS DECIMAL(10,2)) AS valor_final,
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_final,
     NOW() AS data_stamp
 FROM ML001030 m30
 JOIN DOCUMENTO d 
