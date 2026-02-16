@@ -5,6 +5,8 @@ SELECT
     m30.tipoFinanciamentoDesc AS pf_pj,
     m30.nomeRazaoCli AS cliente,
     m30.documentoIdent AS documento,
+    m30.telefone AS tel_cliente,
+    m30.celular AS cel_cliente,
     CONVERT(dataCriacao, DATE) AS data_criacao,
     CONVERT(dataAtualizacao, DATE) AS data_atualizacao,
     m30.atividadeDesc AS status_projeto,
