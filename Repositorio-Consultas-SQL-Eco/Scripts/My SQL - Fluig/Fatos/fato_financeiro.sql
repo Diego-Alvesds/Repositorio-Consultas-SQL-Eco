@@ -3,6 +3,7 @@ SELECT
     m30.entradaImputado AS FILIAL,
     m30.contrato_protheus AS NUMERO_CONTRATO,
     m30.nomeRazaoCli AS NOME_CLIENTE,
+    m30.tipoFinanciamentoDesc AS PF_PJ,
     m30.documentoIdent AS DOCUMENTO,
     m30.origemCliente AS ORIGEM_CLIENTE,
     m30.cidadeInstalacao AS cod_cidade_instalacao,
