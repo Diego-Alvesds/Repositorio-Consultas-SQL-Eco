@@ -7,6 +7,8 @@ SELECT
     m30.atividadeDesc AS status_projeto,
     CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_negociacao,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
+    m30.tipoFinanciamentoDesc AS pf_pj,
+    m30.nomeRazaoCli AS cliente,
     m30.vendedor_protheus AS cod_vendedor_protheus,
 	m30.executivo_protheus AS cod_executivo_protheus, 
     m30.descricaoUnidade AS unidade,
