@@ -20,6 +20,4 @@ INNER JOIN (
     ON m.documentid = ult.documentid
    AND m.version = ult.max_version
 WHERE m.companyid = 1
-AND m.documentid NOT IN ("12440", "249962", "262360", "12767", "1946037", "12795", "2066092", "2670938", "9817")
-
-
+AND m.documentid NOT IN ("12440", "249962", "262360", "1946037", "12795", "2066092", "2670938", "9817")
