@@ -1,5 +1,5 @@
-SELECT 
-    m.documentid AS cod_cidade_instalacao,
+SELECT DISTINCT
+    TRIM(REPLACE(m.documentid, ',', '' )) AS cod_cidade_instalacao,
     m.cidade,
     m.estado,
     CONCAT(m.cidade, ' - ', m.estado) AS cidade_estado,
@@ -21,3 +21,5 @@ INNER JOIN (
    AND m.version = ult.max_version
 WHERE m.companyid = 1
 AND m.documentid NOT IN ("12440", "249962", "262360", "12767", "1946037", "12795", "2066092", "2670938", "9817")
+
+
