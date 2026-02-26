@@ -66,34 +66,52 @@ SELECT
     CASE
         WHEN m30.statusBV = 'Aprovado' THEN 'Sim'
         WHEN m30.statusBV = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusBV = 'Aprovado Parcial' THEN 'Sim'
         WHEN m30.statusLosango = 'Aprovado' THEN 'Sim'
         WHEN m30.statusLosango = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusLosango = 'Aprovado Parcial' THEN 'Sim'
         WHEN m30.statusSantander = 'Aprovado' THEN 'Sim'
         WHEN m30.statusSantander = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusSantander = 'Aprovado Parcial' THEN 'Sim'
         WHEN m30.statusTMX = 'Aprovado' THEN 'Sim'
         WHEN m30.statusTMX = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusTMX = 'Aprovado Parcial' THEN 'Sim'
         WHEN m30.statusBTG = 'Aprovado' THEN 'Sim'
         WHEN m30.statusBTG = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusBTG = 'Aprovado Parcial' THEN 'Sim'
         WHEN m30.statusOmni = 'Aprovado' THEN 'Sim'
         WHEN m30.statusOmni = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusOmni = 'Aprovado Parcial' THEN 'Sim'
         WHEN m30.statusHorwin = 'Aprovado' THEN 'Sim'
         WHEN m30.statusHorwin = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusHorwin = 'Aprovado Parcial' THEN 'Sim'
         WHEN m30.statusGrenke = 'Aprovado' THEN 'Sim'
         WHEN m30.statusGrenke = 'Pre Aprovado' THEN 'Sim'
-        WHEN m30.statusConectepag  = 'Aprovado' THEN 'Sim'
-        WHEN m30.statusConectepag = 'Pre Aprovado' THEN 'Sim'    
-        WHEN m30.statusAventis  = 'Aprovado' THEN 'Sim'
+        WHEN m30.statusGrenke = 'Aprovado Parcial' THEN 'Sim'
+        WHEN m30.statusConectepag = 'Aprovado' THEN 'Sim'
+        WHEN m30.statusConectepag = 'Pre Aprovado' THEN 'Sim' 
+        WHEN m30.statusConectepag = 'Aprovado Parcial' THEN 'Sim'
+        WHEN m30.statusAventis = 'Aprovado' THEN 'Sim'
         WHEN m30.statusAventis = 'Pre Aprovado' THEN 'Sim'
-        WHEN m30.statusCRIEcopower  = 'Aprovado' THEN 'Sim'
+        WHEN m30.statusAventis = 'Aprovado Parcial' THEN 'Sim'
+        WHEN m30.statusCRIEcopower = 'Aprovado' THEN 'Sim'
         WHEN m30.statusCRIEcopower = 'Pre Aprovado' THEN 'Sim'
-        WHEN m30.statusFIDCEcopower  = 'Aprovado' THEN 'Sim'
+        WHEN m30.statusCRIEcopower = 'Aprovado Parcial' THEN 'Sim'
+        WHEN m30.statusFIDCEcopower = 'Aprovado' THEN 'Sim'
         WHEN m30.statusFIDCEcopower = 'Pre Aprovado' THEN 'Sim'
-        WHEN m30.statusEOS  = 'Aprovado' THEN 'Sim'
+        WHEN m30.statusFIDCEcopower = 'Aprovado Parcial' THEN 'Sim'
+        WHEN m30.statusEOS = 'Aprovado' THEN 'Sim'
         WHEN m30.statusEOS = 'Pre Aprovado' THEN 'Sim'
-        WHEN m30.statusCieloRecorrente  = 'Aprovado' THEN 'Sim'
+        WHEN m30.statusEOS = 'Aprovado Parcial' THEN 'Sim'
+        WHEN m30.statusCieloRecorrente = 'Aprovado' THEN 'Sim'
         WHEN m30.statusCieloRecorrente = 'Pre Aprovado' THEN 'Sim'
-        WHEN m30.statusPortoBank  = 'Aprovado' THEN 'Sim'
+        WHEN m30.statusCieloRecorrente = 'Aprovado Parcial' THEN 'Sim'
+        WHEN m30.statusPortoBank = 'Aprovado' THEN 'Sim'
         WHEN m30.statusPortoBank = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusPortoBank = 'Aprovado Parcial' THEN 'Sim'
+        WHEN m30.statusRedAsset = 'Aprovado' THEN 'Sim'
+        WHEN m30.statusRedAsset = 'Pre Aprovado' THEN 'Sim'
+        WHEN m30.statusRedAsset = 'Aprovado Parcial' THEN 'Sim'
         ELSE 'Não'
     END AS Aprovado,
     CONVERT(STR_TO_DATE(REPLACE(m33.validadeAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATE) AS VALIDADE_RETORNO,
@@ -107,14 +125,16 @@ SELECT
     NOW() AS data_stamp
 FROM
     ML001030 m30
-    JOIN DOCUMENTO d ON d.COD_REG_LISTA = m30.ID
-    JOIN ML001033 m33 ON m33.companyid = m30.companyid
+    JOIN DOCUMENTO d 
+    ON d.COD_REG_LISTA = m30.ID
+    JOIN ML001033 m33 
+    ON m33.companyid = m30.companyid
     AND m33.masterid = m30.ID
 WHERE
     d.COD_EMPRESA = 1 
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND m33.dataAnalise BETWEEN '2025-01-01T00:00:00' AND '2026-12-31T23:59:59'
+    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
     AND m33.dataAnalise <> ''
     AND m33.idFinanceira <> ''
     AND m33.selecionaFinanceira <> ''
