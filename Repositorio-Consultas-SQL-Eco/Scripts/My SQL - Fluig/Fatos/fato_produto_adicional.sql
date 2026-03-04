@@ -26,7 +26,7 @@ SELECT
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_final,
 	m55.codigoProdutoAdicional AS cod_produto_adicional,
     m55.produtosAdicionaisDesc AS produto_adicional,
-	m55.qtdProdutosAdicionais AS qtd_produto_adicional,
+	CAST(m55.qtdProdutosAdicionais AS DECIMAL (10,2)) AS qtd_produto_adicional,
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorUnitProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_unit_produto_adicional,
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS subtotal_produto_adicional,
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.totalProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS total_produtos_adicionais,
