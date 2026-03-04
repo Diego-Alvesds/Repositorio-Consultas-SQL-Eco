@@ -169,6 +169,8 @@ AND ada.ADA_X_STAN NOT IN('7')
 AND ada.ADA_X_STAD NOT IN('5')
 AND ada.ADA_TPCTRT IN('1','2','5','7','9','A','B','C','F','G',' ')
 AND ada.ADA_FILIAL <> '0112'
+AND ada.ADA_XFLUIG = '00383018'
+
 
 
 

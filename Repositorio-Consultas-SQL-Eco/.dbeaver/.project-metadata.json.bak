@@ -1,1 +1,1 @@
-{"resources":{"Scripts/My SQL - Fluig/Fatos/fato_acompanhamento_diario.sql":{"default-datasource":"mysql8-19bdb8572e9-51d26ab2ebb27bba","default-catalog":"c4wc2e_153784_fl_pd"}}}
+{"resources":{"Scripts/My SQL - Fluig/Fatos/fato_acompanhamento_diario.sql":{"default-datasource":"mysql8-19bdb8572e9-51d26ab2ebb27bba","default-catalog":"c4wc2e_153784_fl_pd"},"Scripts/SQL Server - Protheus/Dimensões/dim_produto.sql":{"default-datasource":"microsoft-19c4e438e7d-37cb0792fb2645f9","default-catalog":"robo","default-schema":"dbo"}}}
