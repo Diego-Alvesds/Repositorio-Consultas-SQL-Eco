@@ -23,10 +23,16 @@ SELECT
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorDescontoTotal, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_DESCONTO_TOTAL,
     m30.atividade AS cod_status_projeto,
     m30.atividadeDesc AS STATUS_PROJETO,
-    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_PARCELA,
+    CASE 
+    	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.parcela AS DECIMAL(10,2))
+    	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
+    END AS VALOR_PARCELA,
     m33.carencia AS CARENCIA,
     m33.qntParcela AS QTD_PARCELA,
-    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorAprovado, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_APROVADO,
+    CASE 
+    	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.valorAprovado AS DECIMAL(10,2))
+    	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorAprovado, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
+    END AS VALOR_APROVADO,
     m33.classificacaoCliente AS CLASSE_CLIENTE,
     m33.descricaoAnalise AS Desc_Analise,
     CONVERT(STR_TO_DATE(REPLACE(m33.dataAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATETIME) AS DATA_RETORNO,
@@ -134,10 +140,16 @@ WHERE
     d.COD_EMPRESA = 1 
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-01-31 23:59:59'
     AND m33.dataAnalise <> ''
     AND m33.idFinanceira <> ''
     AND m33.selecionaFinanceira <> ''
     AND m30.atividadeDesc <> ''
     AND m30.proposta <> '00000NaN'
+
+  	
+    
+
+    
+    
 
