@@ -140,7 +140,7 @@ WHERE
     d.COD_EMPRESA = 1 
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-01-31 23:59:59'
+    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
     AND m33.dataAnalise <> ''
     AND m33.idFinanceira <> ''
     AND m33.selecionaFinanceira <> ''
