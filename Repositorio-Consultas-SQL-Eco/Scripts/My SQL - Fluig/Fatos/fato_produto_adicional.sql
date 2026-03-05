@@ -11,6 +11,7 @@ SELECT
     m30.nomeRazaoCli AS cliente,
     m30.vendedor_protheus AS cod_vendedor_protheus,
 	m30.executivo_protheus AS cod_executivo_protheus, 
+	m30.nomeFranqueado AS nome_vendedor,
     m30.descricaoUnidade AS unidade,
     m30.cidadeInstalacaoDesc AS cidade,
     m30.estadoInstalacao AS estado,
@@ -58,7 +59,7 @@ WHERE 1 = 1
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
     AND m30.atividade <> '15'
-    AND m30.dataAtualizacao BETWEEN '2024-01-01 00:00:00' AND '2026-12-31 23:59:59'
+    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
 	
 	
 	
