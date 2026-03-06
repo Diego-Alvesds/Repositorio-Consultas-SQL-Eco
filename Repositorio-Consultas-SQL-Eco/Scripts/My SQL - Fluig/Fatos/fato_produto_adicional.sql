@@ -44,7 +44,8 @@ SELECT
     CASE m30.chkFreteFrontline
         WHEN 'true' THEN 'SIM'
         ELSE 'NÃO'
-    END AS frete_frontline
+    END AS frete_frontline,
+    NOW() AS data_stamp
 FROM DOCUMENTO d
     JOIN ML001030 m30 
     ON m30.companyid = d.COD_EMPRESA
