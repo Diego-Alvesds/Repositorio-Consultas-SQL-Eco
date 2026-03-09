@@ -99,7 +99,6 @@ SELECT
 		ELSE NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01')
 	END AS data_negociacao,
 	ada.ADA_X_STAN AS cod_status_negociacao,
-	ada.ADA_X_STAN AS cod_status_negociacao,
 	CASE ada.ADA_X_STAN
 		WHEN '0' THEN 'Solic Ra'
 		WHEN '1' THEN 'Boleto'
