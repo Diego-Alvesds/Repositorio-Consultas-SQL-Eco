@@ -23,7 +23,7 @@ SELECT
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorDescontoTotal, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_DESCONTO_TOTAL,
     m30.atividade AS cod_status_projeto,
     m30.atividadeDesc AS STATUS_PROJETO,
-    CASE 
+    CASE 																																	-- 05/03/2026 - Retornos da Conectepag pela rotina automatica com padrão decimal '0.00'
     	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.parcela AS DECIMAL(10,2))
     	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
     END AS VALOR_PARCELA,
