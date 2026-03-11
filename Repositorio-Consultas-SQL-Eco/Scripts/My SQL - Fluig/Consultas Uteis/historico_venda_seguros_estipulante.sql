@@ -38,7 +38,8 @@ SELECT
 	m30.cidadeInstalacaoDesc AS cidade,
 	m30.estadoInstalacao AS estado,
 	m30.cepInstalacao AS cep,
-	CAST((((ca.valUnitarioProdutoAdicional - ((m30.descontoDado / 100) * ca.valUnitarioProdutoAdicional))*100) / 1.5) AS DECIMAL (10,2)) AS valorProjetoSegurado
+	CAST((((ca.valUnitarioProdutoAdicional - ((m30.descontoDado / 100) * ca.valUnitarioProdutoAdicional))*100) / 1.5) AS DECIMAL (10,2)) AS valorProjetoSegurado,
+	m30.email AS email_cliente
 FROM DOCUMENTO d
     JOIN ML001030 m30 
     ON m30.companyid = d.COD_EMPRESA
@@ -53,7 +54,8 @@ FROM DOCUMENTO d
 WHERE 1 = 1
 	AND COD_EMPRESA = 1
     AND VERSAO_ATIVA = 1
-    AND m30.tipoTrocaSimulacao BETWEEN '2025-11-01 00:00:00' AND '2026-12-31 23:59:59'
+    AND m30.tipoTrocaSimulacao BETWEEN '2025-01-01 00:00:00' AND '2026-12-31 23:59:59'
     AND m55.produtosAdicionaisDesc LIKE '%SEGURO%'
     AND m30.atividade IN ('14', '22')
+
 
