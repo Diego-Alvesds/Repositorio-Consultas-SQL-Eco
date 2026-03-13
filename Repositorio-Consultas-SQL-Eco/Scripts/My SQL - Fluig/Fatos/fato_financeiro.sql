@@ -16,6 +16,7 @@ SELECT
     CAST(m30.potenciaSimul AS DECIMAL (6,2)) AS POTENCIA,
     m30.vendedor_protheus AS VENDEDOR_PROTHEUS,
     m30.executivo_protheus AS EXECUTIVO_PROTHEUS, 
+    m30.nomeFranqueado AS NOME_VENDEDOR,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_FINAL,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorTabelaSimul, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_TABELA_SIMUL,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorTabelaTotal, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_TABELA_TOTAL,
