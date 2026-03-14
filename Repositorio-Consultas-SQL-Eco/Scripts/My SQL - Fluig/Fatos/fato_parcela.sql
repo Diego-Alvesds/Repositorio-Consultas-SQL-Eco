@@ -2,6 +2,7 @@ SELECT
     m30.entradaImputado AS filial,
     m30.proposta AS proposta,
     m30.contrato_protheus AS contrato,
+    TRIM(CONCAT(m30.entradaImputado,contrato_protheus)) AS filialcontrato,
     m30.tipoFinanciamentoDesc AS pf_pj,
     m30.nomeRazaoCli AS cliente,
     m30.documentoIdent AS documento,
