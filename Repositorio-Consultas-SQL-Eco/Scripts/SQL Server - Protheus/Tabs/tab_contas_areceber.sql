@@ -12,6 +12,7 @@ SELECT
 	E1_NATUREZ AS cod_natureza,
 	E1_CLIENTE AS cod_cliente,
 	E1_LOJA AS cod_loja,
+	TRIM(CONCAT(E1_CLIENTE,E1_LOJA)) AS cod_clienteloja,
 	E1_NOMCLI AS nome_cliente,
 	CONVERT(DATE,E1_EMISSAO) AS data_emissao,
 	CONVERT(DATE,E1_VENCTO) AS data_vencimento,
