@@ -15,6 +15,6 @@ SELECT
 	F1_ESPECIE AS especie,
 	F1_RECBMTO AS data_recebimento,
 	F1_CHVNFE AS chave_nf,
-	DATA_ATUALIZACAO 
+	DATA_ATUALIZACAO AS data_stamp
 FROM SF1010
 WHERE 1 = 1
