@@ -8,7 +8,7 @@ SELECT
 	E1_NUMNOTA AS num_nf,
 	E1_PARCELA AS parcela,
 	E1_TIPO AS tipo,
-	E1_SALDO AS saldo,
+	CONVERT(FLOAT,E1_SALDO ) AS saldo,
 	E1_NATUREZ AS cod_natureza,
 	E1_CLIENTE AS cod_cliente,
 	E1_LOJA AS cod_loja,
