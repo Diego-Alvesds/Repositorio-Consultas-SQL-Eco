@@ -1,4 +1,3 @@
-
 SELECT DISTINCT 
     m30.proposta AS proposta,
     m30.entradaImputado AS filial,
@@ -9,6 +8,9 @@ SELECT DISTINCT
     m30.atividade AS cod_status,
     m30.atividadeDesc AS status_projeto,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
+    m30.cliente_protheus AS cod_cliente,
+    m30.loja_protheus AS cod_loja,
+    TRIM(CONCAT(m30.cliente_protheus,m30.loja_protheus)) AS cod_clienteloja,
     m30.tipoFinanciamentoDesc AS pf_pj,
     m30.documentoIdent AS documento,
     m30.nomeRazaoCli AS nome_cliente,
@@ -31,7 +33,8 @@ SELECT DISTINCT
     m30.formasDePagEfetivadas AS forma_de_pagamento,
     m30.vendedor_protheus AS cod_vendedor2,
     m30.executivo_protheus AS cod_vendedor3,  
-    CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_negociacao
+    CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_negociacao,
+    NOW() AS data_stamp
 FROM ML001030 m30
 JOIN DOCUMENTO d 
 ON d.COD_REG_LISTA = m30.ID
@@ -43,7 +46,3 @@ WHERE 1 = 1
     AND m30.atividadeDesc <> ''
     AND m30.proposta <> '00000NaN'
     AND m30.contrato_protheus <> ''
-    
-    
-    
-    
