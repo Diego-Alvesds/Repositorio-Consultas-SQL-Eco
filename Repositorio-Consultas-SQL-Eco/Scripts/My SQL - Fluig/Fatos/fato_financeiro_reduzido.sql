@@ -41,14 +41,14 @@ SELECT
     CONVERT(STR_TO_DATE(REPLACE(m33.validadeAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATE) AS validade_retorno,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.entradaFinanceira, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS entrada_retorno,
     m33.qntParcela AS qtd_parcela,
-    CASE 																																	-- 05/03/2026 - Retornos da Conectepag pela rotina automatica com padrão decimal '0.00'
-    	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.parcela AS DECIMAL(10,2))
-    	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
+    CASE                                                                                                                                    -- 05/03/2026 - Retornos da Conectepag pela rotina automatica com padrão decimal '0.00'
+        WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.parcela AS DECIMAL(10,2))
+        ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
     END AS valor_parcela,
     m33.carencia AS carencia,
     CASE 
-    	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.valorAprovado AS DECIMAL(10,2))
-    	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorAprovado, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
+        WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.valorAprovado AS DECIMAL(10,2))
+        ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorAprovado, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
     END AS valor_aprovado,
     m33.usarValorTotalDiferenciado AS aprovar_valor_dif_retorno,
     m33.tabelaFinanceira AS tabela_financeira_retorno,
@@ -70,6 +70,7 @@ AND m33.selecionaFinanceira <> ''
 AND m30.atividadeDesc <> ''
 AND m30.proposta <> '00000NaN'
 AND m30.contrato_protheus <> ''
+AND m33.opcaoEscolhida = 'opcaoEscolhida'
 
 
 
