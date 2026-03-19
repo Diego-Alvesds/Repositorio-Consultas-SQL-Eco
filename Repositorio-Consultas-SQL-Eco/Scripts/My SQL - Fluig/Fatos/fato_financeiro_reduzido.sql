@@ -1,18 +1,18 @@
 SELECT 
-    m30.proposta AS PROPOSTA,
-    m30.entradaImputado AS FILIAL,
-    m30.contrato_protheus AS NUMERO_CONTRATO,
+    m30.proposta AS proposta,
+    m30.entradaImputado AS filial,
+    m30.contrato_protheus AS contrato,
     TRIM(CONCAT(m30.entradaImputado,contrato_protheus)) AS filialcontrato,
     m30.cliente_protheus AS cod_cliente,
     m30.loja_protheus AS cod_loja,
     TRIM(CONCAT(m30.cliente_protheus,m30.loja_protheus)) AS cod_clienteloja,
     m33.opcaoEscolhida AS Opcao_Escolhida,  
-    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.retencaoFinanceira, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS RETENCAO_FINANCEIRA,
-    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorTotalFinanciamento, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS VALOR_FINANCIAMENTO,
-    m33.statusFinanceira AS STATUS,
-    CAST(m33.taxa AS DECIMAL (6,2)) AS TAXA_CLIENTE,
-    m33.idFinanceira AS ID_FINANCEIRA,
-    m33.selecionaFinanceira AS FINANCEIRA,
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.retencaoFinanceira, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS retencao_financeira,
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorTotalFinanciamento, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_financiamento,
+    m33.statusFinanceira AS status,
+    CAST(m33.taxa AS DECIMAL (6,2)) AS taxa_cliente,
+    m33.idFinanceira AS id_financeira,
+    m33.selecionaFinanceira AS financeira,
     CASE m33.idFinanceira
         WHEN '206' THEN 'Banco Aprovoou'
         WHEN '207' THEN 'BV Financeira'
@@ -37,21 +37,21 @@ SELECT
         WHEN '3303899'  THEN 'Porto Bank'
         WHEN '3663572'  THEN 'DESCONTO CESSÃO Banco Santander'
     END AS financeira_reduzido,
-    CONVERT(STR_TO_DATE(REPLACE(m33.dataAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATETIME) AS DATA_RETORNO,
-    CONVERT(STR_TO_DATE(REPLACE(m33.validadeAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATE) AS VALIDADE_RETORNO,
-    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.entradaFinanceira, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS ENTRADA_RETORNO,
-    m33.qntParcela AS QTD_PARCELA,
+    CONVERT(STR_TO_DATE(REPLACE(m33.dataAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATETIME) AS data_retorno,
+    CONVERT(STR_TO_DATE(REPLACE(m33.validadeAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATE) AS validade_retorno,
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.entradaFinanceira, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS entrada_retorno,
+    m33.qntParcela AS qtd_parcela,
     CASE 																																	-- 05/03/2026 - Retornos da Conectepag pela rotina automatica com padrão decimal '0.00'
     	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.parcela AS DECIMAL(10,2))
     	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
-    END AS VALOR_PARCELA,
-    m33.carencia AS CARENCIA,
+    END AS valor_parcela,
+    m33.carencia AS carencia,
     CASE 
     	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.valorAprovado AS DECIMAL(10,2))
     	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorAprovado, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
-    END AS VALOR_APROVADO,
-    m33.usarValorTotalDiferenciado AS APROVAR_VALOR_DIF_RETORNO,
-    m33.tabelaFinanceira AS TABELA_FINANCEIRA_RETORNO,
+    END AS valor_aprovado,
+    m33.usarValorTotalDiferenciado AS aprovar_valor_dif_retorno,
+    m33.tabelaFinanceira AS tabela_financeira_retorno,
     NOW() AS data_stamp
 FROM ML001030 m30
 JOIN DOCUMENTO d 
