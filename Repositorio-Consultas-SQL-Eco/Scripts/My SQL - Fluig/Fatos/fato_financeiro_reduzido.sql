@@ -37,8 +37,19 @@ SELECT
         WHEN '3303899'  THEN 'Porto Bank'
         WHEN '3663572'  THEN 'DESCONTO CESSÃO Banco Santander'
     END AS financeira_reduzido,
+    CONVERT(STR_TO_DATE(REPLACE(m33.dataAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATETIME) AS DATA_RETORNO,
     CONVERT(STR_TO_DATE(REPLACE(m33.validadeAnalise, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATE) AS VALIDADE_RETORNO,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.entradaFinanceira, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS ENTRADA_RETORNO,
+    m33.qntParcela AS QTD_PARCELA,
+    CASE 																																	-- 05/03/2026 - Retornos da Conectepag pela rotina automatica com padrão decimal '0.00'
+    	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.parcela AS DECIMAL(10,2))
+    	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
+    END AS VALOR_PARCELA,
+    m33.carencia AS CARENCIA,
+    CASE 
+    	WHEN m33.idFinanceira = '3066772' AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(m33.valorAprovado AS DECIMAL(10,2))
+    	ELSE CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorAprovado, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2))
+    END AS VALOR_APROVADO,
     m33.usarValorTotalDiferenciado AS APROVAR_VALOR_DIF_RETORNO,
     m33.tabelaFinanceira AS TABELA_FINANCEIRA_RETORNO,
     NOW() AS data_stamp
@@ -58,3 +69,21 @@ AND m33.idFinanceira <> ''
 AND m33.selecionaFinanceira <> ''
 AND m30.atividadeDesc <> ''
 AND m30.proposta <> '00000NaN'
+AND m30.contrato_protheus <> ''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
