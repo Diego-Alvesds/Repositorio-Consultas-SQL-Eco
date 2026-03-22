@@ -76,7 +76,6 @@ AND m33.dataAnalise <> ''
 AND m33.idFinanceira <> ''
 AND m33.selecionaFinanceira <> ''
 AND m30.atividadeDesc <> ''
-AND m30.proposta NOT IN ('00000NaN','00148111','00187137','00189120','00190659','00190992','00409630' )
 AND m30.contrato_protheus <> ''
 AND m33.opcaoEscolhida = 'opcaoEscolhida'
 
