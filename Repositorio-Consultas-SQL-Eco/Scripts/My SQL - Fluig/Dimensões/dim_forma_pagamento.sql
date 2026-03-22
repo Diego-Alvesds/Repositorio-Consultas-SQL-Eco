@@ -17,6 +17,7 @@ SELECT DISTINCT
         WHEN  '381899' THEN 'SICOOB'
         WHEN  '381907' THEN 'Bonificação'
         WHEN  '459345' THEN 'BV Financeira'
+        WHEN  '459350' THEN 'Tabela Losango'
         WHEN  '459355' THEN 'Santander.'
         WHEN  '556398' THEN 'Boleto Valor Tabela'
         WHEN  '556402' THEN 'Boleto Valor Desconto'
@@ -34,7 +35,7 @@ SELECT DISTINCT
         WHEN  '1481184' THEN 'CESSÃO via Losango'
         WHEN  '1481218' THEN 'CESSÃO COTAS via Losango'
         WHEN  '1481222' THEN 'CESSÃO via Banco Santander'
-        WHEN  '1481223' THEN 'CESSÃO via Banco Aprovoou'
+        WHEN  '1481223' THEN 'CESSÃO COTA CPFL Aprovoou'
         WHEN  '1534811' THEN 'FGTS (TEGGE PAY)'
         WHEN  '1534815' THEN 'FGTS (TEGGE PAY) - TABELA'
         WHEN  '2070700' THEN 'Desconto CESSÃO via Losango'
@@ -56,6 +57,7 @@ SELECT DISTINCT
         WHEN  '3303892' THEN 'Cielo Recorrente'
         WHEN  '3303897' THEN 'EOS'
         WHEN  '3303899' THEN 'Porto Bank'
+        WHEN  '3663572' THEN 'Desconto CESSÃO Banco Santander'
     END AS forma_pagamento
 FROM 
     ML001030 m30
@@ -66,5 +68,5 @@ WHERE
     d.COD_EMPRESA = 1 
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND dataCriacao BETWEEN '2025-01-01 00:00:00' AND '2026-12-31 23:59:59'
+    AND dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
     AND pagamentoParcelasAprovacao <> ''
