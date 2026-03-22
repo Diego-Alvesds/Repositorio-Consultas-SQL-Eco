@@ -55,6 +55,7 @@ SELECT
         WHEN '1701' THEN 'Banco Sicredi'
         WHEN '459345' THEN 'Tabela BV Financeira'
         WHEN '459350' THEN 'Tabela Losango'
+        WHEN '459355' THEN 'Tabela Banco Santander'
         WHEN '1481113' THEN 'Cessão TMX'
         WHEN '1481180' THEN 'Cessão BV'
         WHEN '1481180' THEN 'Cessão BV'
@@ -153,10 +154,4 @@ WHERE
     AND m33.selecionaFinanceira <> ''
     AND m30.atividadeDesc <> ''
     AND m30.proposta <> '00000NaN'
-
-  	
-    
-
-    
-    
 
