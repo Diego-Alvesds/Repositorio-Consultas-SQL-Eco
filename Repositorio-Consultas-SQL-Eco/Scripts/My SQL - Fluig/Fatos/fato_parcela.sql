@@ -13,6 +13,7 @@ SELECT
     m30.atividadeDesc AS status_projeto,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
     m30.descricaoUnidade AS unidade,
+    m30.executivo_protheus AS cod_executivo_protheus,
     CAST(m30.potenciaSimul AS DECIMAL (6,2)) AS potencia,
     CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_negociacao,
     m56.pagamentoParcelasAprovacao AS cod_forma_pagamento,
