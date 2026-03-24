@@ -9,6 +9,8 @@
     m30.atividadeDesc AS status_projeto,
     m30.tipoSimulacaoDesc AS tipo_simulacao,
     m30.tipoFinanciamentoDesc AS pf_pj,
+    m30.cliente_protheus AS cod_cliente,
+    m30.nomeRazaoCli AS nome_cliente,
     CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_venda,
     m30.codigoUnidade AS cod_unidade,
     m30.descricaoUnidade AS unidade,
@@ -48,8 +50,3 @@ WHERE 1 = 1
     AND m30.proposta <> '00000NaN'
     AND m30.atividade <> '15' 
 
-
-
-
-
-    
