@@ -7,7 +7,7 @@ SELECT
     ADB_CODPRO AS cod_produto,
     ADB_DESPRO AS descricao_produto,
     ADB_UM AS unidade_medida,
-    ADB_QUANT AS qtd_produto,
+    CONVERT(INT, ADB_QUANT) AS qtd_produto,
     CONVERT(FLOAT, ADB_PRCVEN) AS preco_venda,
     CONVERT(FLOAT, ADB_TOTAL) AS preco_venda_total,
     ADB_PEDCOB AS numero_pedido,
