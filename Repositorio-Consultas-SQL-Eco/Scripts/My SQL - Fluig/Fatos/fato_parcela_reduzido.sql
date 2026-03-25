@@ -15,6 +15,7 @@ SELECT
     m56.pagamentoParcelasAprovacaoDesc AS forma_pagamento,
     m56.situacaoParcelasAprovacaoDesc AS evento,
     m56.qtdParcelasAprovacao AS parcelas,
+    m56.sequenciaParcelasAprovacao AS sequencia_parcelas,
     m56.retencao AS retencao,
     m56.taxaFinanciamento AS taxa_financiamento,
     CONVERT(m56.dataParcelasAprovacao, DATE) AS data_parcela,
