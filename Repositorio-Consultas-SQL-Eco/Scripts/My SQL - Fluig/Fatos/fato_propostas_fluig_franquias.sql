@@ -86,3 +86,4 @@ WHERE 1 = 1
     AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
     AND m30.atividadeDesc <> ''
     AND m30.proposta <> '00000NaN'
+    AND m30.atividadeDesc <> 'Finalizar Perdida'
