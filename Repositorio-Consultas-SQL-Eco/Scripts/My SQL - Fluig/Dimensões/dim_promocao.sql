@@ -1,13 +1,15 @@
 WITH ultima_promo AS(
     SELECT 
         documentid,
-        MAX(version) AS max_version
+        MAX(version) AS max_version,
+        MAX(ID) AS max_id
     FROM ML001015
     WHERE companyid = 1
     GROUP BY documentid
 )
 SELECT 
 	m15.documentid AS documentid,
+	m15.version,
     m15.idPromocaoCriada AS id_promocao_criada,
     m15.descPromocao AS desc_promocao,
     CAST(m15.potencia AS DECIMAL (10,2)) AS potencia_promocao,
@@ -27,6 +29,16 @@ SELECT
 FROM  ML001015 m15
 INNER JOIN ultima_promo up
     ON up.documentid = m15.documentid
-    AND m15.version = up.max_version
+    AND up.max_version = m15.version
+    AND up.max_id = m15.ID
 WHERE 1 = 1
 AND m15.companyid = 1
+
+
+
+
+
+
+
+
+
