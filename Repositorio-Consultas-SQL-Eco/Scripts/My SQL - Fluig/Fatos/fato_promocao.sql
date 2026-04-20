@@ -30,6 +30,7 @@ SELECT
 	m36.descricaoPromocao AS descricao_promocao,
 	CAST(m36.potenciaPromocao AS DECIMAL (10,2)) AS potencia_promocao,
 	m36.idPromocao AS id_promocao,
+	m36.documentid AS documentid,
 	m36.codigoProdutoPromocao AS cod_produto_promocao,
 	m36.geracaoPromocao AS geracao_promocao,
 	m36.moduloPromocao AS modulo_promocao,
