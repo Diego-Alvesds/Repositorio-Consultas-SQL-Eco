@@ -7,6 +7,7 @@ WITH ultima_promo AS(
     GROUP BY documentid
 )
 SELECT 
+	m15.documentid AS documentid,
     m15.idPromocaoCriada AS id_promocao_criada,
     m15.descPromocao AS desc_promocao,
     CAST(m15.potencia AS DECIMAL (10,2)) AS potencia_promocao,
