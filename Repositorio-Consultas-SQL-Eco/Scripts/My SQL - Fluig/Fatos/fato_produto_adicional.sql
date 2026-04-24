@@ -25,6 +25,7 @@ SELECT
     END AS regiao,
     CAST(m30.potenciaSimul AS DECIMAL (10,2)) AS potencia,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_final,
+    m55.categoriaProdutoAdicional AS categoria_produto,
 	m55.codigoProdutoAdicional AS cod_produto_adicional,
     m55.produtosAdicionaisDesc AS produto_adicional,
 	CAST(m55.qtdProdutosAdicionais AS DECIMAL (10,2)) AS qtd_produto_adicional,
