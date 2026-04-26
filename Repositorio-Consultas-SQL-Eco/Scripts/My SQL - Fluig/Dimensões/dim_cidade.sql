@@ -7,7 +7,21 @@ SELECT DISTINCT
     m.taxaFrete AS taxa_frete,
     m.latitude,
     m.longitude,
-    m.codigoIBGE AS codigo_ibge
+    m.codigoIBGE AS codigo_ibge,
+    m.janeiro,
+    m.fevereiro,
+    m.marco,
+    m.abril,
+    m.maio,
+    m.junho,
+    m.julho,
+    m.agosto,
+    m.setembro,
+    m.outubro,
+    m.novembro,
+    m.dezembro,
+    m.media,
+    m.percentualSeguranca
 FROM ML001017 m
 INNER JOIN (
     SELECT
