@@ -24,6 +24,10 @@ SELECT
     ELSE 'Região não identificada'
     END AS regiao,
     CAST(m30.potenciaSimul AS DECIMAL (10,2)) AS potencia,
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorTabelaSimul, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_tabela_simulacao,
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorTabelaTotal, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_tabela_total,
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorDescontoSimul, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_desconto_simulacao,
+    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorDescontoTotal, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_desconto_total,
     CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_final,
     m55.categoriaProdutoAdicional AS categoria_produto,
 	m55.codigoProdutoAdicional AS cod_produto_adicional,
@@ -33,6 +37,7 @@ SELECT
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS subtotal_produto_adicional,
 	CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.totalProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS total_produtos_adicionais,
 	CAST(m55.qtdProdutosAdicionais * (CAST(REPLACE(REPLACE(REGEXP_REPLACE(m55.valorUnitProdutosAdicionais, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)))AS DECIMAL(10,2)) AS total_produtos_adicionais_real,
+	CAST(m30.descontoDado AS DECIMAL (10,2)) AS desconto_dado,
 	m55.produtoAdicionalEntregue AS produto_entregue,
 	m55.produtoBonificado AS produto_bonificado,
 	m30.formasDePagEfetivadas AS forma_de_pagamento,
