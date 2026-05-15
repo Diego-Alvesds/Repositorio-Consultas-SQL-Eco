@@ -14,7 +14,7 @@ WHERE
     d.COD_EMPRESA = 1
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND m30.proposta = '00406217'
+    AND m30.proposta = '00448923'
 
 UPDATE
     ML001030 m30
@@ -28,7 +28,7 @@ WHERE
     d.COD_EMPRESA = 1
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND m30.proposta = '00406217'
+    AND m30.proposta = '00448923'
 
 -- Atualizar dados do franqueado na engenharia
 
