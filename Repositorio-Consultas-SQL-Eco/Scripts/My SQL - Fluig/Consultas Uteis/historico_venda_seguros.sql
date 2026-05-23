@@ -32,6 +32,6 @@ FROM
 WHERE
     COD_EMPRESA = 1
     AND VERSAO_ATIVA = 1
-    AND m30.dataAtualizacao BETWEEN '2025-01-01 00:00:00' AND '2026-12-31 23:59:59'
+    AND m30.dataAtualizacao BETWEEN '2025-01-02 00:00:00' AND '2026-12-31 23:59:59'
     AND m55.produtosAdicionaisDesc LIKE '%SEGURO%'
     AND m30.atividade IN ('14', '22')
