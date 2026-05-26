@@ -12,6 +12,7 @@ SELECT
     m30.vendedor_protheus AS cod_vendedor_protheus,
 	m30.executivo_protheus AS cod_executivo_protheus, 
 	m30.nomeFranqueado AS nome_vendedor,
+    m30.codigoUnidade AS cod_unidade,
     m30.descricaoUnidade AS unidade,
     m30.cidadeInstalacaoDesc AS cidade,
     m30.estadoInstalacao AS estado,
