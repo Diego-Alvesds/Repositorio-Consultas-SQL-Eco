@@ -187,7 +187,7 @@ WHERE
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
     AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
-    AND m33.dataAnalise <> ''
+    --AND m33.dataAnalise <> ''
     AND m33.idFinanceira <> ''
     AND m33.selecionaFinanceira <> ''
     AND m30.atividadeDesc <> ''
