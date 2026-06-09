@@ -1,0 +1,10 @@
+SELECT 
+	NULLIF(CONVERT(DATE,FT_ENTRADA), '1900-01-01') AS data_entrada,
+	NULLIF(CONVERT(DATE,FT_EMISSAO), '1900-01-01') AS data_emissao,
+	FT_NFISCAL AS doc_fiscal,
+	FT_TIPOMOV AS tipo_mov,
+	FT_ITEM AS cod_item,
+	FT_OBSERV AS obs_liv_fiscal,
+	FT_CFOP AS cod_fiscal
+FROM SFT010 
+WHERE 1 = 1
