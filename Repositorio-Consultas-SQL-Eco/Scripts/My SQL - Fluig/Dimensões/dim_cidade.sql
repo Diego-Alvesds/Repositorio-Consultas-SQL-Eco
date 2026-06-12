@@ -34,4 +34,4 @@ INNER JOIN (
     ON m.documentid = ult.documentid
    AND m.version = ult.max_version
 WHERE m.companyid = 1
-AND m.documentid NOT IN ('12440', '249962', '262360', '1946037', '12795', '2066092', '2670938', '9817', '3102417', '99738', '3383386', '11271')
+AND m.documentid NOT IN ('12440', '249962', '262360', '1946037', '12795', '4184802', '2066092','9885', '3102417', '99738', '3383386', '11271', '8702')
