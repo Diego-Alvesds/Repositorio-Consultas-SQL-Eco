@@ -1,4 +1,4 @@
-SELECT
+SELECT DISTINCT
     m721.telefone,
     m721.nomeCliente AS nome_cliente,
     CONVERT(STR_TO_DATE(REPLACE(m721.dataCriacao, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATETIME) AS data_criacao,
