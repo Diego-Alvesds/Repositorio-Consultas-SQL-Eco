@@ -1,0 +1,15 @@
+SELECT
+    m721.telefone,
+    m721.nomeCliente AS nome_cliente,
+    CONVERT(STR_TO_DATE(REPLACE(m721.dataCriacao, 'T', ''),'%Y-%m-%d %H:%i:%s'), DATETIME) AS data_criacao,
+    m721.conversion_source,
+    m721.source_app,
+    m721.source_id,
+    m721.ctwa_clid
+FROM ML001721 m721
+JOIN DOCUMENTO d 
+ON d.COD_REG_LISTA = m721.ID
+WHERE 1 = 1
+AND d.COD_EMPRESA = 1
+AND d.COD_LISTA = 721
+AND d.VERSAO_ATIVA = 1 
