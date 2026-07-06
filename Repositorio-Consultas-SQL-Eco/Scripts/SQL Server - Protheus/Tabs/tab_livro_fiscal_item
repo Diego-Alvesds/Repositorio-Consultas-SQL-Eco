@@ -5,6 +5,7 @@ SELECT
 	FT_TIPOMOV AS tipo_mov,
 	FT_ITEM AS cod_item,
 	FT_OBSERV AS obs_liv_fiscal,
-	FT_CFOP AS cod_fiscal
+	FT_CFOP AS cod_fiscal,
+	FT_VALCONT AS vl_contabil
 FROM SFT010 
 WHERE 1 = 1
