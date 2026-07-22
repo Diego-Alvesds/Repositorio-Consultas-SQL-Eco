@@ -34,6 +34,15 @@ SELECT
     m30.telefoneFranqueado AS tel_franqueado,   
     CONVERT(m30.validadeProposta, DATE) AS validade, 
     m30.classe AS classe,
+    CASE 
+        WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '5. Cota de Potência em Usina EcoPower' THEN 'Cota em Usina'
+        WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '3. Cota de Potência em Usina EcoPower' THEN 'Cota em Usina'
+        WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '4. Venda Avulsa' THEN 'Venda Avulsa'
+        WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '13. Venda Avulsa' THEN 'Venda Avulsa'
+        WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '5. Uso Próprio Convencional' THEN 'Sem Classe'
+        WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '' THEN 'Sem Classe'
+        ELSE m30.classe
+    END AS classe_ajustada,
     m30.localInstalacaoDesc AS local_instalacao,
     CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_fin_comercial_fluig, 
     CONVERT(m30.regiaoInstalacao, DATE) AS data_recebimento, 
@@ -135,6 +144,8 @@ SELECT
         WHEN m30.atividade = '15' THEN 'Sim'
     ELSE 'Não' 
     END AS finalizar_perdida,
+    m30.nomeMesaLead AS nome_mesa_lead,
+    m30.descricaoAcao AS descricao_acao,
     NOW() AS data_stamp
 FROM ML001030 m30
 JOIN DOCUMENTO d 
