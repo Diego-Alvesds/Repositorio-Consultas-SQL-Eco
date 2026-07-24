@@ -145,7 +145,10 @@ SELECT
     ELSE 'Não' 
     END AS finalizar_perdida,
     m30.nomeMesaLead AS nome_mesa_lead,
-    m30.descricaoAcao AS descricao_acao,
+    CASE 
+		WHEN m30.descricaoAcao = ""  OR m30.descricaoAcao IS NULL THEN "N/A"
+		ELSE m30.descricaoAcao
+	END AS descricao_acao,
     NOW() AS data_stamp
 FROM ML001030 m30
 JOIN DOCUMENTO d 
