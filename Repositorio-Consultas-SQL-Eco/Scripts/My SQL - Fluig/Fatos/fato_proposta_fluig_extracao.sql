@@ -28,7 +28,10 @@ SELECT
     m30.estadoInstalacao as estado_instlacao,
     m30.situacaoResidencia as situacao_residencia_pf,
     m30.situacaoResidenciaPJ as situacao_residencia_pj,
-    m30.origemCliente AS origem_cliente,
+    CASE 
+		WHEN m30.origemCliente = ""  OR m30.origemCliente IS NULL THEN "Sem Origem"
+		ELSE m30.origemCliente
+	END AS origem_cliente,
     m30.descricaoUnidade AS unidade,
     m30.nomeFranqueado AS vendedor,
     m30.telefoneFranqueado AS tel_franqueado,   
