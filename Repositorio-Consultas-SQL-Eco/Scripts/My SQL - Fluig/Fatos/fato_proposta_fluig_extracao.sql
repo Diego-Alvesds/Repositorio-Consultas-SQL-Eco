@@ -147,7 +147,14 @@ SELECT
         WHEN m30.atividade = '15' THEN 'Sim'
     ELSE 'Não' 
     END AS finalizar_perdida,
-    m30.nomeMesaLead AS nome_mesa_lead,
+    CASE 
+        WHEN m30.nomeMesaLead = "Camila Santana da Cruz" THEN "Camila Cruz"
+        WHEN m30.nomeMesaLead = "Daniel Trentini Feijão" THEN "Daniel Feijão"
+        WHEN m30.nomeMesaLead = "Daniela Siqueira da Silva" THEN "Daniela Silva"
+        WHEN m30.nomeMesaLead = "SAMARA RODRIGUES ALCANTARA" THEN "Samara Alcantara"
+        WHEN m30.nomeMesaLead = "Soraya Cristina da Silva" THEN "Soraya Silva"
+        ELSE m30.nomeMesaLead
+    END AS nome_mesa_lead,  
     CASE 
 		WHEN m30.descricaoAcao = ""  OR m30.descricaoAcao IS NULL THEN "N/A"
 		ELSE m30.descricaoAcao
