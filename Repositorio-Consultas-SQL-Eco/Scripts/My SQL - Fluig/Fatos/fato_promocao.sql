@@ -49,7 +49,7 @@ SELECT
     m30.formasDePagEfetivadas AS forma_de_pagamento,
     NOW() AS data_stamp
 FROM ML001030 m30
-INNER JOIN DOCUMENTO d 
+JOIN DOCUMENTO d 
 	ON d.COD_REG_LISTA = m30.ID
 	AND m30.documentid = d.NR_DOCUMENTO
 	AND m30.version = d.NR_VERSAO
