@@ -1,5 +1,6 @@
 SELECT 
 	NULLIF(CONVERT(DATE,D2_EMISSAO), '1900-01-01') AS data_emissao,
+    D2_DOC AS num_doc,
 	D2_ITEM AS cod_item,
 	D2_TES AS tipo_saida,
 	D2_CF AS cod_fiscal,
