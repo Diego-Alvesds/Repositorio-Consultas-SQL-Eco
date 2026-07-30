@@ -1,0 +1,8 @@
+SELECT 
+	NULLIF(CONVERT(DATE,D2_EMISSAO), '1900-01-01') AS data_emissao,
+	D2_ITEM AS cod_item,
+	D2_TES AS tipo_saida,
+	D2_CF AS cod_fiscal,
+	D2_TOTAL AS vl_total
+FROM SD2010 
+WHERE 1 = 1
