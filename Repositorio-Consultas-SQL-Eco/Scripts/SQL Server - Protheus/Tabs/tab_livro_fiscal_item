@@ -6,6 +6,7 @@ SELECT
 	FT_ITEM AS cod_item,
 	FT_OBSERV AS obs_liv_fiscal,
 	FT_CFOP AS cod_fiscal,
-	FT_VALCONT AS vl_contabil
+	FT_VALCONT AS vl_contabil,
+	DATA_ATUALIZACAO 
 FROM SFT010 
 WHERE 1 = 1

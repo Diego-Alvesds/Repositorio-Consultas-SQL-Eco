@@ -4,6 +4,7 @@ SELECT
 	D2_ITEM AS cod_item,
 	D2_TES AS tipo_saida,
 	D2_CF AS cod_fiscal,
-	D2_TOTAL AS vl_total
+	D2_TOTAL AS vl_total,
+	DATA_ATUALIZACAO 
 FROM SD2010 
 WHERE 1 = 1
