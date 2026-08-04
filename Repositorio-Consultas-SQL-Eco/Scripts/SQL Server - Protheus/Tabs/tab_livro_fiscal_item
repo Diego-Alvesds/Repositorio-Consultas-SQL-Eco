@@ -7,6 +7,6 @@ SELECT
 	FT_OBSERV AS obs_liv_fiscal,
 	FT_CFOP AS cod_fiscal,
 	FT_VALCONT AS vl_contabil,
-	DATA_ATUALIZACAO 
+	DATA_ATUALIZACAO AS data_atualizacao
 FROM SFT010 
 WHERE 1 = 1

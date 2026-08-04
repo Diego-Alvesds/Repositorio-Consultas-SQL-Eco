@@ -1,10 +1,11 @@
 SELECT  
 	D1_CF AS cod_fiscal,
+	D1_TES AS tipo_saida,
 	D1_ITEM AS item_nf,
 	NULLIF(CONVERT(DATE,D1_DTDIGIT), '1900-01-01') AS dt_digitacao,
 	D1_FORNECE AS cod_forn_cliente,
 	D1_DOC AS num_nf,
 	D1_TOTAL AS vl_total,
-	DATA_ATUALIZACAO 
+	DATA_ATUALIZACAO AS data_atualizacao
 FROM SD1010 
 WHERE 1 = 1

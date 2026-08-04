@@ -5,6 +5,6 @@ SELECT
 	D2_TES AS tipo_saida,
 	D2_CF AS cod_fiscal,
 	D2_TOTAL AS vl_total,
-	DATA_ATUALIZACAO 
+	DATA_ATUALIZACAO AS data_atualizacao
 FROM SD2010 
 WHERE 1 = 1
