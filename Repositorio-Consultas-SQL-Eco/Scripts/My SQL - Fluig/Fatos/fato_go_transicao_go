@@ -1,0 +1,27 @@
+SELECT
+    m30.proposta,
+    STR_TO_DATE(m112.dataHistoricoCompleta, '%d/%m/%Y %H:%i:%s')       AS dt_status,
+    DATE(STR_TO_DATE(m112.dataHistoricoCompleta, '%d/%m/%Y %H:%i:%s')) AS data_status,
+    m112.statusHistoricoDe         AS status_de,
+    m112.statusHistorico           AS status_para,
+    m112.matriculaUsuarioHistorico AS matricula,
+    m112.nomeUsuarioHistorico      AS usuario_hist,
+    NOW() AS dt_carga
+FROM ML001030 m30
+JOIN DOCUMENTO d   
+ON d.COD_REG_LISTA = m30.ID
+JOIN ML001112 m112 
+ON m112.companyid = m30.companyid 
+AND m112.masterid = m30.ID
+WHERE 1 = 1
+AND d.COD_EMPRESA = 1 
+AND d.COD_LISTA = 30 
+AND d.VERSAO_ATIVA = 1
+AND m30.proposta NOT IN ('', '00000NaN') 
+AND m30.proposta IS NOT NULL
+AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+AND ( m112.statusHistoricoDe IN ('Avaliar Grandes Obras','Retorno Grandes Obras','Repescagem Grandes Obras') OR m112.statusHistorico IN ('Avaliar Grandes Obras','Retorno Grandes Obras','Repescagem Grandes Obras') )
+AND m112.statusHistorico IS NOT NULL 
+AND m112.statusHistorico <> ''
+AND m112.statusHistoricoDe IS NOT NULL 
+AND m112.statusHistoricoDe <> '';
