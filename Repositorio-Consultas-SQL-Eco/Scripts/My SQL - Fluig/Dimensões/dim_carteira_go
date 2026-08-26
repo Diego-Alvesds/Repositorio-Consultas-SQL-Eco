@@ -1,0 +1,35 @@
+WITH handoffs AS
+  (SELECT m30.descricaoUnidade AS unidade,
+          m30.codigoUnidade AS cod_unidade,
+          m112.matriculaUsuarioHistorico AS cod_usuario,
+          DATE(STR_TO_DATE(m112.dataHistoricoCompleta, '%d/%m/%Y %H:%i:%s')) AS dt_handoff
+   FROM ML001030 m30
+   JOIN DOCUMENTO d 
+   ON d.COD_REG_LISTA = m30.ID
+   JOIN ML001112 m112 
+   ON m112.companyid = m30.companyid
+   AND m112.masterid = m30.ID
+   WHERE 1 = 1
+     AND d.COD_EMPRESA = 1
+     AND d.COD_LISTA = 30
+     AND d.VERSAO_ATIVA = 1
+     AND m30.proposta NOT IN ('','00000NaN')
+     AND m30.proposta IS NOT NULL
+     AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+     AND m112.statusHistoricoDe = 'Avaliar Grandes Obras'
+     AND m112.statusHistorico = 'Retorno Grandes Obras'
+     AND m112.matriculaUsuarioHistorico IN ('andre.pereira','bruno.silva','gabriela.martins','joao.perez','jose.lima','marcos.messias','supermauro','najara.deus','richard.rodrigues')),
+     ranked AS
+  (SELECT unidade,
+          cod_unidade,
+          cod_usuario,
+          dt_handoff,
+          ROW_NUMBER() OVER (PARTITION BY cod_unidade ORDER BY dt_handoff DESC) AS rn
+   FROM handoffs)
+SELECT unidade,
+       cod_unidade,
+       cod_usuario AS cod_executivo_atual,
+       dt_handoff AS dt_ultimo_handoff,
+       NOW() AS dt_carga
+FROM ranked
+WHERE rn = 1;
