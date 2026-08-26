@@ -1,0 +1,121 @@
+WITH base AS (
+    SELECT m30.proposta,
+           m30.entradaImputado AS filial,
+           m30.contrato_protheus AS contrato,
+           CONVERT(m30.dataCriacao, DATE) AS data_criacao,
+           CAST(m30.atividade AS SIGNED) AS cod_status,
+           m30.atividadeDesc AS status_projeto,
+           CONVERT(m30.dataAtualizacao, DATE) AS data_atualizacao,
+           m30.tipoSimulacaoDesc AS tipo_simulacao,
+           m30.tipoFinanciamentoDesc AS pf_pj,
+           m30.nomeRazaoCli AS cliente,
+           m30.documentoIdent AS documento,
+           m30.cidadeInstalacao AS cod_cidade_instalacao,
+           m30.cidadeInstalacaoDesc AS cidade_instalacao,
+           m30.estadoInstalacao AS estado_instalacao,
+           m30.localInstalacaoDesc AS local_instalacao,
+           CASE
+               WHEN m30.origemCliente = '' OR m30.origemCliente IS NULL THEN 'Sem Origem'
+               ELSE m30.origemCliente
+           END AS origem_cliente,
+           m30.codigoUnidade AS cod_unidade,
+           m30.descricaoUnidade AS unidade,
+           m30.nomeFranqueado AS vendedor,
+           CASE
+               WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '5. Cota de Potência em Usina EcoPower' THEN 'Cota em Usina'
+               WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '3. Cota de Potência em Usina EcoPower' THEN 'Cota em Usina'
+               WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '4. Venda Avulsa' THEN 'Venda Avulsa'
+               WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '13. Venda Avulsa' THEN 'Venda Avulsa'
+               WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '5. Uso Próprio Convencional' THEN 'Sem Classe'
+               WHEN m30.classe = '' AND m30.tipoSimulacaoDesc = '' THEN 'Sem Classe'
+               ELSE m30.classe
+           END AS classe_ajustada,
+           CASE
+               WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) = TRIM(IFNULL(m30.marcaInversorDesc, '')) AND TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
+               WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) = '' AND TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
+               WHEN TRIM(IFNULL(m30.marcaInversorDesc, '')) = '' AND TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) <> '' THEN TRIM(m30.marcaInversorPromocaoDesc)
+               WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) <> TRIM(IFNULL(m30.marcaInversorDesc, '')) AND TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
+               ELSE 'Venda Avulsa'
+           END AS tipo_inversor,
+           CAST(m30.potenciaSimul AS DECIMAL(10, 2)) AS potencia,
+           CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.]', ''), '.', ''), ',', '.') AS DECIMAL(10, 2)) AS valor_final,
+           CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_negociacao,
+           m30.ciaPF_desc AS companhia,
+           m30.tensao AS tensao,
+           m30.tensaoPJ AS tensao_pj,
+           m30.abrigo AS abrigo,
+           m30.geracaoSimul AS geracao,
+           m30.inversoresSimul AS inversores,
+           m30.modulosSimulDesc AS modulos,
+           m30.modulosSimul AS qtd_modulos,
+           m30.aceitaFiname AS finame,
+           m30.vendedor_protheus AS vendedor_protheus,
+           m30.executivo_protheus AS executivo_protheus,
+           CASE
+               WHEN m30.atividade = '15' THEN 'Sim'
+               ELSE 'Não'
+           END AS finalizar_perdida,
+           NOW() AS dt_carga,
+           ROW_NUMBER() OVER (
+               PARTITION BY m30.proposta
+               ORDER BY CASE WHEN m30.atividade = '15' THEN 1 ELSE 0 END,  -- Finalizar Perdida por último
+                        m30.dataAtualizacao DESC,                          -- registro mais recente
+                        m30.ID DESC                                        -- desempate estável
+           ) AS rn
+    FROM ML001030 m30
+    JOIN DOCUMENTO d
+      ON d.COD_REG_LISTA = m30.ID
+    WHERE 1 = 1
+      AND d.COD_EMPRESA = 1
+      AND d.COD_LISTA = 30
+      AND d.VERSAO_ATIVA = 1
+      AND m30.proposta NOT IN ('', '00000NaN')
+      AND m30.proposta IS NOT NULL
+      AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+      AND EXISTS (
+          SELECT 1 FROM ML001112 x
+          WHERE x.companyid = m30.companyid
+            AND x.masterid  = m30.ID
+            AND ( x.statusHistorico   = 'Avaliar Grandes Obras'
+               OR x.statusHistoricoDe = 'Avaliar Grandes Obras' )
+      )
+)
+SELECT proposta,
+       filial,
+       contrato,
+       data_criacao,
+       cod_status,
+       status_projeto,
+       data_atualizacao,
+       tipo_simulacao,
+       pf_pj,
+       cliente,
+       documento,
+       cod_cidade_instalacao,
+       cidade_instalacao,
+       estado_instalacao,
+       local_instalacao,
+       origem_cliente,
+       cod_unidade,
+       unidade,
+       vendedor,
+       classe_ajustada,
+       tipo_inversor,
+       potencia,
+       valor_final,
+       data_negociacao,
+       companhia,
+       tensao,
+       tensao_pj,
+       abrigo,
+       geracao,
+       inversores,
+       modulos,
+       qtd_modulos,
+       finame,
+       vendedor_protheus,
+       executivo_protheus,
+       finalizar_perdida,
+       dt_carga
+FROM base
+WHERE rn = 1;
