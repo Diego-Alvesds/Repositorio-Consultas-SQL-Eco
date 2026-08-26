@@ -1,0 +1,15 @@
+SELECT
+    ut.USER_CODE AS cod_usuario,
+    u.FULL_NAME AS nome_usuario,
+    ut.EMAIL AS email,
+    ut.LOGIN AS login,
+    CASE 
+      WHEN ut.USER_CODE IN ('andre.pereira','bruno.silva','gabriela.martins','joao.perez','jose.lima','marcos.messias','supermauro','najara.deus','richard.rodrigues') THEN 1 
+      ELSE 0 
+    END AS equipe_go,
+    NOW() AS dt_carga
+FROM FDN_USERTENANT ut
+INNER JOIN FDN_USER u 
+ON u.USER_ID = ut.USER_ID
+WHERE 1 = 1
+AND ut.TENANT_ID = 1;
