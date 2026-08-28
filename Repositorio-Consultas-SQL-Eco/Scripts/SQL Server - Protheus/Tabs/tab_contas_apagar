@@ -8,6 +8,7 @@ SELECT
 	E2_PORTADO AS cod_portador,
 	E2_FORNECE AS cod_fornecedor,
 	E2_LOJA AS loja_fornecedor,
+	TRIM(CONCAT(TRIM(E2_FORNECE),TRIM(E2_LOJA))) AS cod_forn_loja,
 	E2_NOMFOR AS fornecedor,
 	CONVERT(DATE,E2_EMISSAO) AS dt_emissao,
 	CONVERT(DATE,E2_VENCTO) AS dt_vencimento,
