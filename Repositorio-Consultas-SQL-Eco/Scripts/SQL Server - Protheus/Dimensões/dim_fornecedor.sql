@@ -2,6 +2,7 @@ SELECT
 	A2_FILIAL AS filial,
 	A2_COD AS cod_formecedor,
 	A2_LOJA AS cod_loja,
+	TRIM(CONCAT(TRIM(A2_COD), TRIM(A2_LOJA))) AS cod_forn_loja,
 	A2_NOME AS nome_fornecedor,
 	A2_NREDUZ AS nome_fornc_reduzido,
 	A2_END AS endereco_fornecedor,
