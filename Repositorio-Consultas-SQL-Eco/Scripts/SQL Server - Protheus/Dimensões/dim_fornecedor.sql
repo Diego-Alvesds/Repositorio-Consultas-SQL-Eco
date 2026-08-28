@@ -1,4 +1,5 @@
 SELECT
+	A2_FILIAL AS filial,
 	A2_COD AS cod_formecedor,
 	A2_LOJA AS cod_loja,
 	A2_NOME AS nome_fornecedor,
@@ -9,12 +10,17 @@ SELECT
 	A2_EST AS uf,
 	A2_CEP AS cep,
 	A2_TIPO AS tipo_fornecedor,
+	A2_TPESSOA AS tipo_pessoa,
 	A2_CGC AS documento,
 	A2_DDD AS ddd,
 	A2_TEL AS telefone,
 	A2_INSCR AS incscricao_estadual,
 	A2_EMAIL AS email,
 	A2_COD_MUN AS cod_municipio,
+	A2_NROCOM AS num_total_compras,
+	A2_PLGRUPO AS classe_fornecedor,
+	A2_TPCON AS tipo_contrato,
+	A2_DTINIR AS dt_inicio_contrato,
 	DATA_ATUALIZACAO AS data_stamp
 FROM SA2010
 WHERE 1 = 1
