@@ -69,6 +69,7 @@ SELECT
 	CONVERT(FLOAT,E2_MDMULT) AS multa_contrato,
 	CONVERT(FLOAT,E2_RETCNTR) AS retencao_contrato,
 	E2_CCUSTO AS centro_custo,
+	TRIM(CONCAT(TRIM(E2_FILIAL),TRIM(E2_CCUSTO))) AS filial_cc,
 	CONVERT(FLOAT,E2_MDDESC) AS desconto_contrato,
 	CONVERT(FLOAT,E2_MDBONI) AS bonificacao_contrato,
 	E2_PARCAGL AS parcela_aglutinadora,
