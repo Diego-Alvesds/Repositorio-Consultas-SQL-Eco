@@ -5,7 +5,4 @@ SELECT
 	B1_UM AS unidade_medida,
 	B1_LOCPAD AS armazem,
 	B1_GRUPO AS grupo,
-	DATA_ATUALIZACAO AS data_stamp
 FROM SB1010
-WHERE 1 = 1
-
