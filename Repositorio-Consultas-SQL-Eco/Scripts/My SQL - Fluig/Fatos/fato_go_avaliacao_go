@@ -1,87 +1,100 @@
--- fato_go_avaliacao_go
--- Versão final: pareamento FIFO por rank dentro do masterid, sem self-transições
-
-WITH ev AS (
-    SELECT
-        m30.ID       AS masterid,
-        m30.proposta AS proposta,
-        STR_TO_DATE(m112.dataHistoricoCompleta, '%d/%m/%Y %H:%i:%s') AS dt_evento,
-        m112.statusHistorico           AS status_para,
-        m112.matriculaUsuarioHistorico AS matricula,
-        CASE
-            WHEN m112.statusHistorico   = 'Avaliar Grandes Obras' THEN 'ABERTURA'
-            WHEN m112.statusHistoricoDe = 'Avaliar Grandes Obras' THEN 'FECHAMENTO'
-        END AS tipo_evento
-    FROM ML001030 m30
-    JOIN (                                               -- IDs válidos calculados UMA vez (sem fan-out)
-        SELECT DISTINCT d.COD_REG_LISTA
-        FROM DOCUMENTO d
-        WHERE d.COD_EMPRESA = 1 AND d.COD_LISTA = 30 AND d.VERSAO_ATIVA = 1
-    ) dd ON dd.COD_REG_LISTA = m30.ID
-    JOIN ML001112 m112
-      ON m112.companyid = m30.companyid
-     AND m112.masterid  = m30.ID
-    WHERE m30.proposta NOT IN ('', '00000NaN')
-      AND m30.proposta IS NOT NULL
-      AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
-      AND (
-            -- entrada real: chegou em Avaliar vindo de OUTRO status
-            ( m112.statusHistorico = 'Avaliar Grandes Obras'
-              AND IFNULL(m112.statusHistoricoDe, '') <> 'Avaliar Grandes Obras' )
-            -- saída real: deixou Avaliar para OUTRO status
-         OR ( m112.statusHistoricoDe = 'Avaliar Grandes Obras'
-              AND IFNULL(m112.statusHistorico, '') <> 'Avaliar Grandes Obras' )
-          )
-),
-rk AS (                                                  -- rank de cada evento dentro de (registro, tipo)
-    SELECT ev.*,
-           ROW_NUMBER() OVER (PARTITION BY masterid, tipo_evento ORDER BY dt_evento) AS rn
-    FROM ev
-),
-pares AS (                                               -- pivot: abertura#i e fechamento#i caem na mesma linha
-    SELECT
-        masterid,
-        MAX(proposta) AS proposta,
-        rn,
-        MAX(CASE WHEN tipo_evento = 'ABERTURA'   THEN dt_evento   END) AS dt_entrada,
-        MAX(CASE WHEN tipo_evento = 'FECHAMENTO' THEN dt_evento   END) AS dt_saida,
-        MAX(CASE WHEN tipo_evento = 'FECHAMENTO' THEN status_para END) AS status_saida,
-        MAX(CASE WHEN tipo_evento = 'FECHAMENTO' THEN matricula   END) AS matricula_fechamento
-    FROM rk
-    GROUP BY masterid, rn
-),
-ciclos AS (
-    SELECT p.*,
-           LEAD(p.dt_entrada) OVER (PARTITION BY p.masterid ORDER BY p.rn) AS dt_prox_abertura
-    FROM pares p
-)
-SELECT
-    c.proposta,
-    c.masterid,
-    c.rn AS nro_ciclo,
-    c.dt_entrada AS dt_entrada_avaliar,
-    CAST(COALESCE(c.dt_entrada, c.dt_saida) AS DATE) AS data_entrada,
-    c.dt_saida   AS dt_saida_avaliar,
-    CASE
-        WHEN c.dt_entrada IS NULL OR c.dt_saida IS NULL THEN NULL
-        ELSE GREATEST(TIMESTAMPDIFF(MINUTE, c.dt_entrada, c.dt_saida) / 60.0, 0)   -- corrige duração negativa
-    END AS horas_corridas,
-    c.status_saida,
-    CASE
-        WHEN c.dt_saida IS NULL THEN 'ABERTA'
-        WHEN c.dt_prox_abertura IS NOT NULL AND c.dt_prox_abertura < c.dt_saida THEN 'ANOMALIA_REABERTURA'
-        WHEN c.status_saida = 'Retorno Grandes Obras'
-             AND IFNULL(c.matricula_fechamento, '') IN
-                 ('andre.pereira','bruno.silva','gabriela.martins','joao.perez','jose.lima','marcos.messias','supermauro','najara.deus','richard.rodrigues')
-             THEN 'VALIDA'
-        WHEN c.status_saida = 'Retorno Grandes Obras' THEN 'RETORNO_FORA_GRUPO'
-        ELSE 'SAIDA_FORA_FLUXO'
-    END AS classificacao_ciclo,
-    c.matricula_fechamento AS matricula_responsavel,
-    COALESCE(
-        c.matricula_fechamento,
-        LAG(c.matricula_fechamento) OVER (PARTITION BY c.masterid ORDER BY c.rn)
-    ) AS matricula_responsavel_efetivo,
-    NOW() AS dt_carga
-FROM ciclos c
-;
+-- fato_go_go : 1 linha por proposta que passou por Avaliar GO
+WITH ev AS
+  (SELECT m30.proposta,
+          m30.atividadeDesc AS status_atual,
+          CAST(m30.atividade AS SIGNED) AS atividade_cod,
+          m30.dataAtualizacao AS dt_atualizacao,
+          STR_TO_DATE(m112.dataHistoricoCompleta, '%d/%m/%Y %H:%i:%s') AS dt,
+          m112.statusHistoricoDe AS de,
+          m112.statusHistorico AS para,
+          m112.matriculaUsuarioHistorico AS matricula
+   FROM ML001030 m30
+   JOIN
+     (SELECT DISTINCT COD_REG_LISTA
+      FROM DOCUMENTO
+      WHERE COD_EMPRESA = 1
+        AND COD_LISTA = 30
+        AND VERSAO_ATIVA = 1) dd 
+     ON dd.COD_REG_LISTA = m30.ID
+   JOIN ML001112 m112 
+   ON m112.companyid = m30.companyid
+   AND m112.masterid = m30.ID
+   WHERE m30.proposta NOT IN ('','00000NaN')
+     AND m30.proposta IS NOT NULL
+     AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+     AND (m112.statusHistorico='Avaliar Grandes Obras' OR m112.statusHistoricoDe = 'Avaliar Grandes Obras')),
+     flags AS
+  (SELECT proposta,
+          status_atual,
+          atividade_cod,
+          dt_atualizacao,
+          dt,
+          matricula,
+          CASE
+              WHEN para = 'Avaliar Grandes Obras' AND IFNULL(de, '') <>'Avaliar Grandes Obras' THEN 1
+              ELSE 0
+          END AS entrou,
+          CASE
+              WHEN de = 'Avaliar Grandes Obras' AND para = 'Retorno Grandes Obras' THEN 1
+              ELSE 0
+          END AS retornou,
+          CASE
+              WHEN de = 'Avaliar Grandes Obras'
+                   AND para = 'Retorno Grandes Obras'
+                   AND matricula IN ('andre.pereira',
+                                     'bruno.silva',
+                                     'gabriela.martins',
+                                     'joao.perez',
+                                     'jose.lima',
+                                     'marcos.messias',
+                                     'supermauro',
+                                     'najara.deus',
+                                     'richard.rodrigues') THEN 1
+              ELSE 0
+          END AS retorno_go
+   FROM ev),
+     agg AS
+  (SELECT proposta,
+          SUBSTRING_INDEX(GROUP_CONCAT(status_atual ORDER BY (atividade_cod = 15) ASC, dt_atualizacao DESC SEPARATOR 0x1D), 0x1D, 1) AS status_atual,
+          MIN(CASE
+                  WHEN entrou = 1 THEN dt
+              END) AS dt_primeira_entrada,
+          MAX(CASE
+                  WHEN entrou = 1 THEN dt
+              END) AS dt_ultima_entrada,
+          MAX(CASE
+                  WHEN retornou = 1 THEN dt
+              END) AS dt_ultimo_retorno,
+          SUM(entrou) AS qtd_entradas,
+          SUM(retornou) AS qtd_retornos,
+          MAX(retorno_go) AS houve_retorno_go,
+          SUBSTRING_INDEX(GROUP_CONCAT(CASE
+                                           WHEN retorno_go = 1 THEN matricula
+                                       END
+                                       ORDER BY dt DESC SEPARATOR '|'), '|', 1) AS matricula_go
+   FROM flags
+   GROUP BY proposta)
+SELECT proposta,
+       status_atual,
+       dt_primeira_entrada,
+       dt_ultima_entrada,
+       dt_ultimo_retorno,
+       qtd_entradas,
+       qtd_retornos,
+       houve_retorno_go,
+       matricula_go,
+       CASE
+           WHEN status_atual = 'Avaliar Grandes Obras' THEN 1
+           ELSE 0
+       END AS em_avaliacao_agora,
+       CASE
+           WHEN status_atual = 'Avaliar Grandes Obras' THEN TIMESTAMPDIFF(DAY, dt_ultima_entrada, NOW())
+       END AS aging_fila_dias,
+       CASE
+           WHEN status_atual = 'Avaliar Grandes Obras' THEN 'EM_AVALIACAO'
+           WHEN houve_retorno_go = 1 THEN 'VALIDA'
+           WHEN qtd_retornos > 0 THEN 'RETORNO_FORA_GRUPO'
+           ELSE 'SAIDA_FORA_FLUXO'
+       END AS classificacao_go,
+       NOW() AS dt_carga
+FROM agg;
