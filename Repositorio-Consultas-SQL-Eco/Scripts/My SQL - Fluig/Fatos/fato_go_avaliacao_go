@@ -14,41 +14,30 @@ WITH ev AS
       FROM DOCUMENTO
       WHERE COD_EMPRESA=1
         AND COD_LISTA=30
-        AND VERSAO_ATIVA=1) dd ON dd.COD_REG_LISTA = m30.ID
-   JOIN ML001112 m112 ON m112.companyid = m30.companyid
+        AND VERSAO_ATIVA=1) dd 
+    ON dd.COD_REG_LISTA = m30.ID
+   JOIN ML001112 m112 
+   ON m112.companyid = m30.companyid
    AND m112.masterid = m30.ID
-   WHERE m30.proposta NOT IN ('',
-                              '00000NaN')
+   WHERE m30.proposta NOT IN ('','00000NaN')
      AND m30.proposta IS NOT NULL
      AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
-     AND (m112.statusHistorico IN ('Avaliar Grandes Obras',
-                                   'Repescagem Grandes Obras')
-          OR m112.statusHistoricoDe IN ('Avaliar Grandes Obras',
-                                        'Repescagem Grandes Obras'))),
+     AND (m112.statusHistorico IN ('Avaliar Grandes Obras','Repescagem Grandes Obras')
+          OR m112.statusHistoricoDe IN ('Avaliar Grandes Obras','Repescagem Grandes Obras'))),
      flags AS
   (SELECT proposta,
-          status_atual,
-          atividade_cod,
-          dt_atualizacao,
           dt,
-          matricula, -- ENTRADA/REATIVAÇÃO: chegou em Avaliar ou Repescagem vindo de status FORA do GO
+          matricula, -- ENTRADA em GO: chegou em Avaliar/Repescagem vindo de fora do trio GO
  CASE
-     WHEN para IN ('Avaliar Grandes Obras',
-                   'Repescagem Grandes Obras')
-          AND IFNULL(de, '') NOT IN ('Avaliar Grandes Obras',
-                                     'Repescagem Grandes Obras',
-                                     'Retorno Grandes Obras') THEN 1
+     WHEN para IN ('Avaliar Grandes Obras','Repescagem Grandes Obras') AND IFNULL(de, '') NOT IN ('Avaliar Grandes Obras','Repescagem Grandes Obras','Retorno Grandes Obras') THEN 1
      ELSE 0
- END AS entrou, -- RETORNO ao fluxo: saiu de Avaliar para Retorno
+ END AS entrou,
  CASE
-     WHEN de='Avaliar Grandes Obras'
-          AND para='Retorno Grandes Obras' THEN 1
+     WHEN de='Avaliar Grandes Obras'AND para='Retorno Grandes Obras' THEN 1
      ELSE 0
  END AS retornou,
  CASE
-     WHEN de='Avaliar Grandes Obras'
-          AND para='Retorno Grandes Obras'
-          AND matricula IN ('andre.pereira',
+     WHEN de='Avaliar Grandes Obras'AND para='Retorno Grandes Obras'AND matricula IN ('andre.pereira',
                             'bruno.silva',
                             'gabriela.martins',
                             'joao.perez',
@@ -60,21 +49,19 @@ WITH ev AS
      ELSE 0
  END AS retorno_go
    FROM ev),
-     agg AS
-  (SELECT proposta,
-          SUBSTRING_INDEX(GROUP_CONCAT(status_atual
-                                       ORDER BY (atividade_cod = 15) ASC, dt_atualizacao DESC SEPARATOR 0x1D), 0x1D, 1) AS status_atual,
-          MAX(dt_atualizacao) AS dt_ultima_atualizacao,
-          MIN(CASE
-                  WHEN entrou=1 THEN dt
-              END) AS dt_primeira_entrada,
-          MAX(CASE
-                  WHEN entrou=1 THEN dt
-              END) AS dt_ultima_entrada, -- âncora do ciclo vigente
+     hist AS
+  (-- agregados do HISTÓRICO GO (marca passagem + classifica fluxo + tempo)
+ SELECT proposta,
+        MIN(CASE
+                WHEN entrou=1 THEN dt
+            END) AS dt_primeira_entrada, -- âncora de coorte
+ MAX(CASE
+         WHEN entrou=1 THEN dt
+     END) AS dt_ultima_entrada,
  MAX(CASE
          WHEN retornou=1 THEN dt
      END) AS dt_ultimo_retorno,
- SUM(entrou) AS qtd_entradas, -- nº de passagens pelo funil (entradas + repescagens)
+ SUM(entrou) AS qtd_entradas,
  SUM(retornou) AS qtd_retornos,
  MAX(retorno_go) AS houve_retorno_go,
  SUBSTRING_INDEX(GROUP_CONCAT(CASE
@@ -82,32 +69,60 @@ WITH ev AS
                               END
                               ORDER BY dt DESC SEPARATOR '|'), '|', 1) AS matricula_go
    FROM flags
-   GROUP BY proposta)
-SELECT proposta,
-       status_atual,
-       dt_ultima_atualizacao,
-       CAST(dt_ultima_atualizacao AS DATE) AS data_atualizacao_go,
-       dt_primeira_entrada,
-       dt_ultima_entrada, -- COORTE = última entrada/reativação; fallback p/ primeira, e p/ atualização se não houver entrada logada
- CAST(COALESCE(dt_ultima_entrada, dt_primeira_entrada, dt_ultima_atualizacao) AS DATE) AS data_entrada_go,
- dt_ultimo_retorno,
- qtd_entradas,
- qtd_retornos,
- houve_retorno_go,
- matricula_go,
+   GROUP BY proposta),
+     viva AS
+  (-- registro VIVO da proposta (situação atual = fonte da verdade, independente de GO)
+ SELECT proposta,
+        status_atual,
+        dt_atualizacao
+   FROM
+     (SELECT m30.proposta,
+             m30.atividadeDesc AS status_atual,
+             m30.dataAtualizacao AS dt_atualizacao,
+             ROW_NUMBER() OVER (PARTITION BY m30.proposta
+                                ORDER BY CASE
+                                             WHEN m30.atividade='15' THEN 1
+                                             ELSE 0
+                                         END, m30.dataAtualizacao DESC, m30.ID DESC) AS rn
+      FROM ML001030 m30
+      JOIN
+        (SELECT DISTINCT COD_REG_LISTA
+         FROM DOCUMENTO
+         WHERE COD_EMPRESA=1
+           AND COD_LISTA=30
+           AND VERSAO_ATIVA=1) dd 
+        ON dd.COD_REG_LISTA = m30.ID
+      WHERE m30.proposta NOT IN ('','00000NaN')
+        AND m30.proposta IS NOT NULL
+        AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59') x
+   WHERE rn = 1)
+SELECT h.proposta,
+       v.status_atual, -- da dim (registro vivo)
+ v.dt_atualizacao AS dt_ultima_atualizacao,
+ CAST(v.dt_atualizacao AS DATE) AS data_atualizacao_go, -- RECÊNCIA (= dim)
+ h.dt_primeira_entrada,
+ CAST(h.dt_primeira_entrada AS DATE) AS data_entrada_go, -- COORTE (só GO)
+ h.dt_ultima_entrada,
+ h.dt_ultimo_retorno,
+ h.qtd_entradas,
+ h.qtd_retornos,
+ h.houve_retorno_go,
+ h.matricula_go,
  CASE
-     WHEN status_atual='Avaliar Grandes Obras' THEN 1
+     WHEN v.status_atual='Avaliar Grandes Obras' THEN 1
      ELSE 0
  END AS em_avaliacao_agora,
  CASE
-     WHEN status_atual='Avaliar Grandes Obras' THEN TIMESTAMPDIFF(DAY, dt_ultima_entrada, NOW())
- END AS aging_fila_dias, -- dias desde a última movimentação (recência real do desfecho)
- TIMESTAMPDIFF(DAY, dt_ultima_atualizacao, NOW()) AS dias_inatividade,
+     WHEN v.status_atual='Avaliar Grandes Obras' THEN TIMESTAMPDIFF(DAY, h.dt_ultima_entrada, NOW())
+ END AS aging_fila_dias,
+ TIMESTAMPDIFF(DAY, v.dt_atualizacao, NOW()) AS dias_inatividade,
  CASE
-     WHEN status_atual='Avaliar Grandes Obras' THEN 'EM_AVALIACAO'
-     WHEN houve_retorno_go=1 THEN 'VALIDA'
-     WHEN qtd_retornos>0 THEN 'RETORNO_FORA_GRUPO'
+     WHEN v.status_atual='Avaliar Grandes Obras' THEN 'EM_AVALIACAO'
+     WHEN h.houve_retorno_go=1 THEN 'VALIDA'
+     WHEN h.qtd_retornos>0 THEN 'RETORNO_FORA_GRUPO'
      ELSE 'SAIDA_FORA_FLUXO'
  END AS classificacao_go,
  NOW() AS dt_carga
-FROM agg;
+FROM hist h
+JOIN viva v 
+ON v.proposta = h.proposta;
