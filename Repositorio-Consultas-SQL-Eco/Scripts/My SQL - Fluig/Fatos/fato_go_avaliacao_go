@@ -14,30 +14,38 @@ WITH ev AS
       FROM DOCUMENTO
       WHERE COD_EMPRESA=1
         AND COD_LISTA=30
-        AND VERSAO_ATIVA=1) dd 
-    ON dd.COD_REG_LISTA = m30.ID
-   JOIN ML001112 m112 
-   ON m112.companyid = m30.companyid
+        AND VERSAO_ATIVA=1) dd ON dd.COD_REG_LISTA = m30.ID
+   JOIN ML001112 m112 ON m112.companyid = m30.companyid
    AND m112.masterid = m30.ID
-   WHERE m30.proposta NOT IN ('','00000NaN')
+   WHERE m30.proposta NOT IN ('',
+                              '00000NaN')
      AND m30.proposta IS NOT NULL
      AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
-     AND (m112.statusHistorico IN ('Avaliar Grandes Obras','Repescagem Grandes Obras')
-          OR m112.statusHistoricoDe IN ('Avaliar Grandes Obras','Repescagem Grandes Obras'))),
+     AND (m112.statusHistorico IN ('Avaliar Grandes Obras',
+                                   'Repescagem Grandes Obras')
+          OR m112.statusHistoricoDe IN ('Avaliar Grandes Obras',
+                                        'Repescagem Grandes Obras'))),
      flags AS
   (SELECT proposta,
           dt,
           matricula, -- ENTRADA em GO: chegou em Avaliar/Repescagem vindo de fora do trio GO
  CASE
-     WHEN para IN ('Avaliar Grandes Obras','Repescagem Grandes Obras') AND IFNULL(de, '') NOT IN ('Avaliar Grandes Obras','Repescagem Grandes Obras','Retorno Grandes Obras') THEN 1
+     WHEN para IN ('Avaliar Grandes Obras',
+                   'Repescagem Grandes Obras')
+          AND IFNULL(de, '') NOT IN ('Avaliar Grandes Obras',
+                                     'Repescagem Grandes Obras',
+                                     'Retorno Grandes Obras') THEN 1
      ELSE 0
- END AS entrou,
+ END AS entrou, -- RETORNO ao fluxo (para classificação): saiu de Avaliar para Retorno
  CASE
-     WHEN de='Avaliar Grandes Obras'AND para='Retorno Grandes Obras' THEN 1
+     WHEN de='Avaliar Grandes Obras'
+          AND para='Retorno Grandes Obras' THEN 1
      ELSE 0
- END AS retornou,
+ END AS retornou, -- RETORNO por membro GO (classifica VALIDA)
  CASE
-     WHEN de='Avaliar Grandes Obras'AND para='Retorno Grandes Obras'AND matricula IN ('andre.pereira',
+     WHEN de='Avaliar Grandes Obras'
+          AND para='Retorno Grandes Obras'
+          AND matricula IN ('andre.pereira',
                             'bruno.silva',
                             'gabriela.martins',
                             'joao.perez',
@@ -47,7 +55,20 @@ WITH ev AS
                             'najara.deus',
                             'richard.rodrigues') THEN 1
      ELSE 0
- END AS retorno_go
+ END AS retorno_go, -- SAÍDA de Avaliar por membro GO (qualquer destino) -> define o RESPONSÁVEL GO
+ CASE
+     WHEN de='Avaliar Grandes Obras'
+          AND matricula IN ('andre.pereira',
+                            'bruno.silva',
+                            'gabriela.martins',
+                            'joao.perez',
+                            'jose.lima',
+                            'marcos.messias',
+                            'supermauro',
+                            'najara.deus',
+                            'richard.rodrigues') THEN 1
+     ELSE 0
+ END AS saiu_go
    FROM ev),
      hist AS
   (-- agregados do HISTÓRICO GO (marca passagem + classifica fluxo + tempo)
@@ -63,9 +84,9 @@ WITH ev AS
      END) AS dt_ultimo_retorno,
  SUM(entrou) AS qtd_entradas,
  SUM(retornou) AS qtd_retornos,
- MAX(retorno_go) AS houve_retorno_go,
+ MAX(retorno_go) AS houve_retorno_go, -- RESPONSÁVEL GO = último a tirar de Avaliar por membro GO (era retorno_go)
  SUBSTRING_INDEX(GROUP_CONCAT(CASE
-                                  WHEN retorno_go=1 THEN matricula
+                                  WHEN saiu_go=1 THEN matricula
                               END
                               ORDER BY dt DESC SEPARATOR '|'), '|', 1) AS matricula_go
    FROM flags
@@ -90,9 +111,9 @@ WITH ev AS
          FROM DOCUMENTO
          WHERE COD_EMPRESA=1
            AND COD_LISTA=30
-           AND VERSAO_ATIVA=1) dd 
-        ON dd.COD_REG_LISTA = m30.ID
-      WHERE m30.proposta NOT IN ('','00000NaN')
+           AND VERSAO_ATIVA=1) dd ON dd.COD_REG_LISTA = m30.ID
+      WHERE m30.proposta NOT IN ('',
+                                 '00000NaN')
         AND m30.proposta IS NOT NULL
         AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59') x
    WHERE rn = 1)
@@ -124,5 +145,4 @@ SELECT h.proposta,
  END AS classificacao_go,
  NOW() AS dt_carga
 FROM hist h
-JOIN viva v 
-ON v.proposta = h.proposta;
+JOIN viva v ON v.proposta = h.proposta;
