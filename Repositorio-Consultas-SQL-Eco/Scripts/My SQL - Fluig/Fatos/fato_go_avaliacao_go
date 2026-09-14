@@ -1,133 +1,89 @@
--- fato_go_avaliacao_go : 1 linha por proposta (CORRIGIDA — uma passagem, sem self-joins)
-WITH docs AS
-  (SELECT DISTINCT COD_REG_LISTA
-   FROM DOCUMENTO
-   WHERE COD_EMPRESA=1
-     AND COD_LISTA=30
-     AND VERSAO_ATIVA=1),
-     ev AS
-  (SELECT m30.proposta,
-          m112.ID AS ev_id,
-          STR_TO_DATE(m112.dataHistoricoCompleta, '%d/%m/%Y %H:%i:%s') AS dt,
-          m112.matriculaUsuarioHistorico AS matricula,
-          CASE
-              WHEN m112.statusHistorico IN ('Avaliar Grandes Obras',
-                                            'Repescagem Grandes Obras')
-                   AND IFNULL(m112.statusHistoricoDe, '') NOT IN ('Avaliar Grandes Obras',
-                                                                  'Repescagem Grandes Obras',
-                                                                  'Retorno Grandes Obras') THEN 1
-              ELSE 0
-          END AS entrou,
-          CASE
-              WHEN m112.statusHistoricoDe='Avaliar Grandes Obras'
-                   AND m112.statusHistorico='Retorno Grandes Obras' THEN 1
-              ELSE 0
-          END AS retornou,
-          CASE
-              WHEN m112.statusHistoricoDe='Avaliar Grandes Obras'
-                   AND m112.statusHistorico='Retorno Grandes Obras'
-                   AND m112.matriculaUsuarioHistorico IN ('andre.pereira',
-                                                          'bruno.silva',
-                                                          'gabriela.martins',
-                                                          'joao.perez',
-                                                          'jose.lima',
-                                                          'marcos.messias',
-                                                          'supermauro',
-                                                          'najara.deus',
-                                                          'richard.rodrigues') THEN 1
-              ELSE 0
-          END AS retorno_go,
-          CASE
-              WHEN m112.statusHistoricoDe='Avaliar Grandes Obras'
-                   AND m112.matriculaUsuarioHistorico IN ('andre.pereira',
-                                                          'bruno.silva',
-                                                          'gabriela.martins',
-                                                          'joao.perez',
-                                                          'jose.lima',
-                                                          'marcos.messias',
-                                                          'supermauro',
-                                                          'najara.deus',
-                                                          'richard.rodrigues') THEN 1
-              ELSE 0
-          END AS saiu_go
-   FROM ML001030 m30
-   JOIN docs ON docs.COD_REG_LISTA = m30.ID
-   JOIN ML001112 m112 ON m112.companyid = m30.companyid
-   AND m112.masterid = m30.ID
-   WHERE m30.proposta NOT IN ('',
-                              '00000NaN')
-     AND m30.proposta IS NOT NULL
-     AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
-     AND (m112.statusHistorico IN ('Avaliar Grandes Obras',
-                                   'Repescagem Grandes Obras')
-          OR m112.statusHistoricoDe IN ('Avaliar Grandes Obras',
-                                        'Repescagem Grandes Obras'))),
-     hist AS
-  (SELECT proposta,
-          MIN(CASE
-                  WHEN entrou=1 THEN dt
-              END) AS dt_primeira_entrada,
-          MAX(CASE
-                  WHEN entrou=1 THEN dt
-              END) AS dt_ultima_entrada,
-          MAX(CASE
-                  WHEN retornou=1 THEN dt
-              END) AS dt_ultimo_retorno,
-          SUM(entrou) AS qtd_entradas,
-          SUM(retornou) AS qtd_retornos,
-          MAX(retorno_go) AS houve_retorno_go,
-          SUBSTRING_INDEX(GROUP_CONCAT(CASE
-                                           WHEN saiu_go=1 THEN matricula
-                                       END
-                                       ORDER BY ev_id DESC SEPARATOR '|'), '|', 1) AS matricula_go
-   FROM ev
-   GROUP BY proposta),
-     viva AS
-  (SELECT proposta,
-          status_atual,
-          dt_atualizacao
-   FROM
-     (SELECT m30.proposta,
-             m30.atividadeDesc AS status_atual,
-             m30.dataAtualizacao AS dt_atualizacao,
-             ROW_NUMBER() OVER (PARTITION BY m30.proposta
-                                ORDER BY CASE
-                                             WHEN m30.atividade='15' THEN 1
-                                             ELSE 0
-                                         END, m30.dataAtualizacao DESC, m30.ID DESC) AS rn
-      FROM ML001030 m30
-      JOIN docs ON docs.COD_REG_LISTA = m30.ID
-      WHERE m30.proposta NOT IN ('',
-                                 '00000NaN')
-        AND m30.proposta IS NOT NULL
-        AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59') x
-   WHERE rn = 1)
-SELECT h.proposta,
-       v.status_atual,
-       v.dt_atualizacao AS dt_ultima_atualizacao,
-       CAST(v.dt_atualizacao AS DATE) AS data_atualizacao_go,
-       h.dt_primeira_entrada,
-       CAST(h.dt_primeira_entrada AS DATE) AS data_entrada_go,
-       h.dt_ultima_entrada,
-       h.dt_ultimo_retorno,
-       h.qtd_entradas,
-       h.qtd_retornos,
-       h.houve_retorno_go,
-       h.matricula_go,
-       CASE
-           WHEN v.status_atual='Avaliar Grandes Obras' THEN 1
-           ELSE 0
-       END AS em_avaliacao_agora,
-       CASE
-           WHEN v.status_atual='Avaliar Grandes Obras' THEN TIMESTAMPDIFF(DAY, h.dt_ultima_entrada, NOW())
-       END AS aging_fila_dias,
-       TIMESTAMPDIFF(DAY, v.dt_atualizacao, NOW()) AS dias_inatividade,
-       CASE
-           WHEN v.status_atual='Avaliar Grandes Obras' THEN 'EM_AVALIACAO'
-           WHEN h.houve_retorno_go=1 THEN 'VALIDA'
-           WHEN h.qtd_retornos>0 THEN 'RETORNO_FORA_GRUPO'
-           ELSE 'SAIDA_FORA_FLUXO'
-       END AS classificacao_go,
-       NOW() AS dt_carga
+-- fato_go_avaliacao_go : 1 linha por proposta — plano forçado (ML001112 primeiro), scan único
+WITH ev AS (
+    SELECT
+        m30.proposta,
+        m112.ID AS ev_id,
+        STR_TO_DATE(m112.dataHistoricoCompleta, '%d/%m/%Y %H:%i:%s') AS dt,
+        m112.matriculaUsuarioHistorico AS matricula,
+        CASE WHEN m112.statusHistorico IN ('Avaliar Grandes Obras','Repescagem Grandes Obras')
+                  AND IFNULL(m112.statusHistoricoDe,'') NOT IN ('Avaliar Grandes Obras','Repescagem Grandes Obras','Retorno Grandes Obras')
+             THEN 1 ELSE 0 END AS entrou,
+        CASE WHEN m112.statusHistoricoDe='Avaliar Grandes Obras' AND m112.statusHistorico='Retorno Grandes Obras'
+             THEN 1 ELSE 0 END AS retornou,
+        CASE WHEN m112.statusHistoricoDe='Avaliar Grandes Obras' AND m112.statusHistorico='Retorno Grandes Obras'
+                  AND m112.matriculaUsuarioHistorico IN ('andre.pereira','bruno.silva','gabriela.martins','joao.perez','jose.lima','marcos.messias','supermauro','najara.deus','richard.rodrigues')
+             THEN 1 ELSE 0 END AS retorno_go,
+        CASE WHEN m112.statusHistoricoDe='Avaliar Grandes Obras'
+                  AND m112.matriculaUsuarioHistorico IN ('andre.pereira','bruno.silva','gabriela.martins','joao.perez','jose.lima','marcos.messias','supermauro','najara.deus','richard.rodrigues')
+             THEN 1 ELSE 0 END AS saiu_go
+    FROM ML001112 m112
+    STRAIGHT_JOIN ML001030 m30
+        ON m30.ID = m112.masterid AND m30.companyid = m112.companyid
+    WHERE ( m112.statusHistorico   IN ('Avaliar Grandes Obras','Repescagem Grandes Obras')
+         OR m112.statusHistoricoDe IN ('Avaliar Grandes Obras','Repescagem Grandes Obras') )
+      AND m30.proposta NOT IN ('','00000NaN') AND m30.proposta IS NOT NULL
+      AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+      AND EXISTS ( SELECT 1 FROM DOCUMENTO d
+                   WHERE d.COD_EMPRESA=1 AND d.COD_LISTA=30
+                     AND d.COD_REG_LISTA=m30.ID AND d.VERSAO_ATIVA=1 )
+),
+hist AS (
+    SELECT
+        proposta,
+        MIN(CASE WHEN entrou=1   THEN dt END) AS dt_primeira_entrada,
+        MAX(CASE WHEN entrou=1   THEN dt END) AS dt_ultima_entrada,
+        MAX(CASE WHEN retornou=1 THEN dt END) AS dt_ultimo_retorno,
+        SUM(entrou)     AS qtd_entradas,
+        SUM(retornou)   AS qtd_retornos,
+        MAX(retorno_go) AS houve_retorno_go,
+        SUBSTRING_INDEX(
+            MAX(CASE WHEN saiu_go=1 THEN CONCAT(LPAD(ev_id,12,'0'),'|',matricula) END),
+            '|', -1) AS matricula_go
+    FROM ev
+    GROUP BY proposta
+),
+viva AS (
+    SELECT proposta, status_atual, dt_atualizacao
+    FROM (
+        SELECT m30.proposta,
+               m30.atividadeDesc AS status_atual,
+               m30.dataAtualizacao AS dt_atualizacao,
+               ROW_NUMBER() OVER (
+                   PARTITION BY m30.proposta
+                   ORDER BY CASE WHEN m30.atividade='15' THEN 1 ELSE 0 END, m30.dataAtualizacao DESC, m30.ID DESC
+               ) AS rn
+        FROM ML001030 m30
+        WHERE m30.proposta NOT IN ('','00000NaN') AND m30.proposta IS NOT NULL
+          AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+          AND EXISTS ( SELECT 1 FROM DOCUMENTO d
+                       WHERE d.COD_EMPRESA=1 AND d.COD_LISTA=30
+                         AND d.COD_REG_LISTA=m30.ID AND d.VERSAO_ATIVA=1 )
+    ) x
+    WHERE rn = 1
+)
+SELECT
+    h.proposta,
+    v.status_atual,
+    v.dt_atualizacao                          AS dt_ultima_atualizacao,
+    CAST(v.dt_atualizacao AS DATE)            AS data_atualizacao_go,
+    h.dt_primeira_entrada,
+    CAST(h.dt_primeira_entrada AS DATE)       AS data_entrada_go,
+    h.dt_ultima_entrada,
+    h.dt_ultimo_retorno,
+    h.qtd_entradas,
+    h.qtd_retornos,
+    h.houve_retorno_go,
+    h.matricula_go,
+    CASE WHEN v.status_atual='Avaliar Grandes Obras' THEN 1 ELSE 0 END AS em_avaliacao_agora,
+    CASE WHEN v.status_atual='Avaliar Grandes Obras'
+         THEN TIMESTAMPDIFF(DAY, h.dt_ultima_entrada, NOW()) END        AS aging_fila_dias,
+    TIMESTAMPDIFF(DAY, v.dt_atualizacao, NOW())                         AS dias_inatividade,
+    CASE
+        WHEN v.status_atual='Avaliar Grandes Obras' THEN 'EM_AVALIACAO'
+        WHEN h.houve_retorno_go=1 THEN 'VALIDA'
+        WHEN h.qtd_retornos>0     THEN 'RETORNO_FORA_GRUPO'
+        ELSE 'SAIDA_FORA_FLUXO'
+    END AS classificacao_go,
+    NOW() AS dt_carga
 FROM hist h
 JOIN viva v ON v.proposta = h.proposta;
