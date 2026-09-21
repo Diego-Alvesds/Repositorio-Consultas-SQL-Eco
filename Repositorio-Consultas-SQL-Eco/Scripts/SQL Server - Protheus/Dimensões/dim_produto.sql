@@ -4,5 +4,6 @@ SELECT
 	B1_TIPO AS tipo_produto,
 	B1_UM AS unidade_medida,
 	B1_LOCPAD AS armazem,
-	B1_GRUPO AS grupo,
+	B1_GRUPO AS grupo
 FROM SB1010
+WHERE 1 = 1
