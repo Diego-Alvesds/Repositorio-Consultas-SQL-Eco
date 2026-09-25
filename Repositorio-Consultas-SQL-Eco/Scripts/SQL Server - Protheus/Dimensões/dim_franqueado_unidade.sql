@@ -27,6 +27,12 @@ SELECT DISTINCT
 		WHEN A3_XTPOPER = '8' THEN 'Power GO'
 		ELSE 'N/A'
 	END AS tipo_operador,
+	A3_X_VENTP AS cod_tipo_vendedor,
+	CASE 
+		WHEN A3_X_VENTP = 1 THEN 'Franqueado'
+		WHEN A3_X_VENTP = 2 THEN 'Executivo'
+		ELSE 'N/A'
+	END AS tipo_vendedor,
 	MAX(DATA_ATUALIZACAO) AS data_stamp
 FROM SA3010
 WHERE 1 = 1
@@ -36,5 +42,6 @@ GROUP BY A3_COD,
 		 A3_ADMISS,
 		 A3_TIPO,
 		 A3_X_TIPIN,
-		 A3_XTPOPER
+		 A3_XTPOPER,
+		 A3_X_VENTP
 		 
