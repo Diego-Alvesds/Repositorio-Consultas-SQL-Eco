@@ -147,6 +147,7 @@ SELECT
         WHEN m30.atividade = '15' THEN 'Sim'
     ELSE 'Não' 
     END AS finalizar_perdida,
+    m30.matriculaMesaLead AS cod_mesa_lead,
     CASE 
         WHEN m30.nomeMesaLead = "Camila Santana da Cruz" THEN "Camila Cruz"
         WHEN m30.nomeMesaLead = "Daniel Trentini Feijão" THEN "Daniel Feijão"
