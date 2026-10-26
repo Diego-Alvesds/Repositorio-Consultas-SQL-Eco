@@ -1,11 +1,11 @@
-
 SELECT 
 	ada.ADA_FILIAL AS filial,
 	ada.ADA_X_UNID AS unidade,
 	ada.ADA_NUMCTR AS contrato,
 	ada.ADA_XFLUIG AS proposta_fluig,
 	TRIM(CONCAT(ada.ADA_FILIAL,ada.ADA_NUMCTR)) AS filial_contrato,
-	CONCAT(ada.ADA_FILIAL, '-',ada.ADA_CONDPG) AS filial_codpag,
+	CONCAT(ada.ADA_FILIAL,ada.ADA_CONDPG) AS filial_codpag,
+	NULLIF(CONVERT(DATE,ada.ADA_EMISSA), '1900-01-01') AS dt_emissao_contrato,
 	ada.ADA_TPCTRT AS cod_tipo_contrato,
 	CASE ADA_TPCTRT
 		 WHEN '1' THEN 'Venda' 
@@ -24,6 +24,8 @@ SELECT
 		 WHEN 'E' THEN 'Desconto em folha'
 		 WHEN 'F' THEN 'Venda Mobilidade'
 		 WHEN 'G' THEN 'Locação'
+		 WHEN 'H' THEN 'Mercado Livre'
+		 WHEN 'I' THEN 'Remessa por Troca'
 		 WHEN ' ' THEN 'Venda'
 	END AS tipo_contrato,
 	ada.ADA_CODCLI AS cod_cliente,
@@ -93,11 +95,11 @@ SELECT
 	ada.ADA_XVEND3 AS nome_vendedor3,
 	NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01') AS data_negociacao_real,
 	NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') AS data_negociao_e,
-	NULLIF(CONVERT(DATE,ada.ADA_EMISSA), '1900-01-01') AS dt_emissao_contrato,
 	CASE
 		WHEN NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01') <> '' THEN NULLIF(CONVERT(DATE,ada.ADA_X_DTN1), '1900-01-01')
-		ELSE ISNULL((NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01')), NULLIF(CONVERT(DATE,ada.ADA_EMISSA), '1900-01-01'))  
+		ELSE NULLIF(CONVERT(DATE,ada.ADA_X_DTNG), '1900-01-01')
 	END AS data_negociacao,
+	ada.ADA_X_STAN AS cod_status_negociacao,
 	ada.ADA_X_STAN AS cod_status_negociacao,
 	CASE ada.ADA_X_STAN
 		WHEN '0' THEN 'Solic Ra'
@@ -164,9 +166,5 @@ SELECT
 	ada.DATA_ATUALIZACAO AS data_stamp
 FROM VW_ADA010 ada 
 WHERE 1 = 1
-AND ada.ADA_TPCTRT IN ('1','2','5','7','9','A','B','C','F','G',' ')
+AND ada.ADA_TPCTRT IN('1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I',' ')
 AND ada.ADA_FILIAL <> '0112'
-
-
-
-
