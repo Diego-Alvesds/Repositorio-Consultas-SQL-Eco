@@ -17,33 +17,56 @@ SELECT m30.proposta AS proposta,
        m30.loja_protheus AS cod_loja,
        TRIM(CONCAT(TRIM(m30.cliente_protheus), TRIM(m30.loja_protheus))) AS cod_clienteloja,
        m33.opcaoEscolhida AS Opcao_Escolhida,
-       CAST(NULLIF(REPLACE(REPLACE(REGEXP_REPLACE(m33.retencaoFinanceira, '[^0-9,.-]', ''), '.', ''), ',', '.'), '') AS DECIMAL(15, 2)) AS retencao_financeira,
-       CAST(NULLIF(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorTotalFinanciamento, '[^0-9,.-]', ''), '.', ''), ',', '.'), '') AS DECIMAL(15, 2)) AS valor_financiamento,
+       CASE
+           WHEN m33.retencaoFinanceira NOT REGEXP '[0-9]' THEN NULL
+           WHEN m33.retencaoFinanceira LIKE '%,%' THEN CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.retencaoFinanceira, '[^0-9,.-]', ''), '.', ''), ',', '.') AS DECIMAL(15, 2))
+           ELSE CAST(REGEXP_REPLACE(m33.retencaoFinanceira, '[^0-9.-]', '') AS DECIMAL(15, 2))
+       END AS retencao_financeira,
+       CASE
+           WHEN m33.valorTotalFinanciamento REGEXP '[0-9]' THEN CAST(REGEXP_REPLACE(m33.valorTotalFinanciamento, '[^0-9.-]', '') AS DECIMAL(15, 2))
+       END AS valor_financiamento,
        m33.statusFinanceira AS status,
        CASE
-           WHEN m33.taxa = '' THEN NULL
-           ELSE CAST(m33.taxa AS DECIMAL(6, 2))
+           WHEN m33.taxa NOT REGEXP '[0-9]' THEN NULL
+           WHEN m33.taxa LIKE '%,%' THEN CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.taxa, '[^0-9,.-]', ''), '.', ''), ',', '.') AS DECIMAL(6, 2))
+           ELSE CAST(REGEXP_REPLACE(m33.taxa, '[^0-9.-]', '') AS DECIMAL(6, 2))
        END AS taxa_cliente,
        m33.idFinanceira AS id_financeira,
        m33.selecionaFinanceira AS financeira,
        CASE
-           WHEN m33.dataAnalise REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN CONVERT(STR_TO_DATE(REPLACE(m33.dataAnalise, 'T', ''), '%Y-%m-%d %H:%i:%s'), DATETIME)
+           WHEN m33.dataAnalise REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN STR_TO_DATE(REPLACE(m33.dataAnalise, 'T', ' '), CASE
+                                                                                                                              WHEN m33.dataAnalise LIKE '%T%'
+                                                                                                                                   OR m33.dataAnalise LIKE '% %' THEN '%Y-%m-%d %H:%i:%s'
+                                                                                                                              ELSE '%Y-%m-%d'
+                                                                                                                          END)
        END AS data_retorno,
        CASE
-           WHEN m33.validadeAnalise REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN CONVERT(STR_TO_DATE(REPLACE(m33.validadeAnalise, 'T', ''), '%Y-%m-%d %H:%i:%s'), DATE)
+           WHEN m33.validadeAnalise REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN DATE(STR_TO_DATE(REPLACE(m33.validadeAnalise, 'T', ' '), CASE
+                                                                                                                                           WHEN m33.validadeAnalise LIKE '%T%'
+                                                                                                                                                OR m33.validadeAnalise LIKE '% %' THEN '%Y-%m-%d %H:%i:%s'
+                                                                                                                                           ELSE '%Y-%m-%d'
+                                                                                                                                       END))
        END AS validade_retorno,
-       CAST(NULLIF(REPLACE(REPLACE(REGEXP_REPLACE(m33.entradaFinanceira, '[^0-9,.-]', ''), '.', ''), ',', '.'), '') AS DECIMAL(15, 2)) AS entrada_retorno,
+       CASE
+           WHEN m33.entradaFinanceira NOT REGEXP '[0-9]' THEN NULL
+           WHEN m33.entradaFinanceira LIKE '%,%' THEN CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.entradaFinanceira, '[^0-9,.-]', ''), '.', ''), ',', '.') AS DECIMAL(15, 2))
+           ELSE CAST(REGEXP_REPLACE(m33.entradaFinanceira, '[^0-9.-]', '') AS DECIMAL(15, 2))
+       END AS entrada_retorno,
        m33.qntParcela AS qtd_parcela,
        CASE
            WHEN m33.idFinanceira = '3066772'
                 AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(NULLIF(m33.parcela, '') AS DECIMAL(15, 2))
-           ELSE CAST(NULLIF(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.-]', ''), '.', ''), ',', '.'), '') AS DECIMAL(15, 2))
+           WHEN m33.parcela NOT REGEXP '[0-9]' THEN NULL
+           WHEN m33.parcela LIKE '%,%' THEN CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.parcela, '[^0-9,.-]', ''), '.', ''), ',', '.') AS DECIMAL(15, 2))
+           ELSE CAST(REGEXP_REPLACE(m33.parcela, '[^0-9.-]', '') AS DECIMAL(15, 2))
        END AS valor_parcela,
        m33.carencia AS carencia,
        CASE
            WHEN m33.idFinanceira = '3066772'
                 AND m33.matriculaUsuarioLogado = 'rotina.automatica' THEN CAST(NULLIF(m33.valorAprovado, '') AS DECIMAL(15, 2))
-           ELSE CAST(NULLIF(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorAprovado, '[^0-9,.-]', ''), '.', ''), ',', '.'), '') AS DECIMAL(15, 2))
+           WHEN m33.valorAprovado NOT REGEXP '[0-9]' THEN NULL
+           WHEN m33.valorAprovado LIKE '%,%' THEN CAST(REPLACE(REPLACE(REGEXP_REPLACE(m33.valorAprovado, '[^0-9,.-]', ''), '.', ''), ',', '.') AS DECIMAL(15, 2))
+           ELSE CAST(REGEXP_REPLACE(m33.valorAprovado, '[^0-9.-]', '') AS DECIMAL(15, 2))
        END AS valor_aprovado,
        m33.usarValorTotalDiferenciado AS aprovar_valor_dif_retorno,
        m33.tabelaFinanceira AS tabela_financeira_retorno,
