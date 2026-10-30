@@ -1,67 +1,75 @@
-SELECT 
-    m30.entradaImputado AS filial,
-    m30.proposta AS proposta,
-    m30.contrato_protheus AS contrato,
-    TRIM(CONCAT(m30.entradaImputado,contrato_protheus)) AS filialcontrato,
-    m30.loja_protheus AS cod_loja,
-    m30.tipoFinanciamentoDesc AS pf_pj,
-    m30.cliente_protheus AS cod_cliente,
-    m30.nomeRazaoCli AS cliente,
-    m30.documentoIdent AS documento,
-    m30.telefone AS tel_cliente,
-    m30.celular AS cel_cliente,
-    CONVERT(dataCriacao, DATE) AS data_criacao,
-    CONVERT(dataAtualizacao, DATE) AS data_atualizacao,
-    m30.atividadeDesc AS status_projeto,
-    m30.tipoSimulacaoDesc AS tipo_simulacao,
-    m30.codigoUnidade AS cod_unidade,
-    m30.descricaoUnidade AS unidade,
-    m30.executivo_protheus AS cod_executivo_protheus,
-    CAST(m30.potenciaSimul AS DECIMAL (6,2)) AS potencia,
-    CONVERT(m30.tipoTrocaSimulacao, DATE) AS data_negociacao,
-    m56.pagamentoParcelasAprovacao AS cod_forma_pagamento,
-    m56.pagamentoParcelasAprovacaoDesc AS forma_pagamento,
-    m56.situacaoParcelasAprovacaoDesc AS evento,
-    m56.qtdParcelasAprovacao AS parcelas,
-    m56.sequenciaParcelasAprovacao AS sequencia_parcelas,
-    m56.retencao AS retencao,
-    m56.taxaFinanciamento AS taxa_financiamento,
-    CONVERT(m56.dataParcelasAprovacao, DATE) AS data_parcela,
-    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m56.valorParcelasAprovacao, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_parcelas,
-    CAST(m56.percentualParcelasAprovacao AS DECIMAL(6,2)) AS percentual_parcelas,
-    m56.carenciaParcelasAprovacao AS carencia,
-    CAST(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.]', ''),'.',''),',','.') AS DECIMAL(10,2)) AS valor_final,   
-    m30.estadoInstalacao AS estado,
-    m30.cidadeInstalacaoDesc AS cidade,
-    CASE 
-        WHEN m30.estadoInstalacao IN ('AC','AM','AP','PA','RO','RR','TO') THEN 'Norte'
-        WHEN m30.estadoInstalacao IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
-        WHEN m30.estadoInstalacao IN ('DF','GO','MT','MS') THEN 'Centro-Oeste'
-        WHEN m30.estadoInstalacao IN ('ES','MG','RJ','SP') THEN 'Sudeste'
-        WHEN m30.estadoInstalacao IN ('PR','RS','SC') THEN 'Sul'
-    ELSE 'Região não identificada'
-    END AS regiao,
-    CASE
-        WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) = TRIM(IFNULL(m30.marcaInversorDesc, '')) AND TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
-        WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) = '' AND TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
-        WHEN TRIM(IFNULL(m30.marcaInversorDesc, '')) = '' AND TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) <> '' THEN TRIM(m30.marcaInversorPromocaoDesc)
-        WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) <> TRIM(IFNULL(m30.marcaInversorDesc, '')) AND TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
-        ELSE 'Venda Avulsa'
-    END AS tipo_inversor,
-    CASE 
-        WHEN m30.atividade = '15' THEN 'Sim'
-    ELSE 'Não' 
-    END AS retirar_finalizarperdida,
-    NOW() AS data_stamp
-FROM 
-    ML001030 m30
-    JOIN DOCUMENTO d ON d.COD_REG_LISTA = m30.ID
-    JOIN ML001056 m56 ON m56.companyid = m30.companyid
-    AND m56.masterid = m30.ID
-WHERE 
-    d.COD_EMPRESA = 1 
-    AND d.COD_LISTA = 30
-    AND d.VERSAO_ATIVA = 1
-    AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
-    AND m30.atividadeDesc <> ''
-    AND m30.proposta <> '00000NaN'
+SELECT m30.entradaImputado AS filial,
+       m30.proposta AS proposta,
+       m30.contrato_protheus AS contrato,
+       TRIM(CONCAT(TRIM(m30.entradaImputado), TRIM(m30.contrato_protheus))) AS filialcontrato,
+       m30.loja_protheus AS cod_loja,
+       m30.tipoFinanciamentoDesc AS pf_pj,
+       m30.cliente_protheus AS cod_cliente,
+       m30.nomeRazaoCli AS cliente,
+       m30.documentoIdent AS documento,
+       m30.telefone AS tel_cliente,
+       m30.celular AS cel_cliente,
+       CASE
+           WHEN m30.dataCriacao REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN DATE(m30.dataCriacao)
+       END AS data_criacao,
+       CASE
+           WHEN m30.dataAtualizacao REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN DATE(m30.dataAtualizacao)
+       END AS data_atualizacao,
+       m30.atividadeDesc AS status_projeto,
+       m30.tipoSimulacaoDesc AS tipo_simulacao,
+       m30.codigoUnidade AS cod_unidade,
+       m30.descricaoUnidade AS unidade,
+       m30.executivo_protheus AS cod_executivo_protheus,
+       CASE
+           WHEN m30.potenciaSimul REGEXP '[0-9]' THEN CAST(REGEXP_REPLACE(m30.potenciaSimul, '[^0-9.-]', '') AS DECIMAL(6, 2))
+       END AS potencia,
+       CASE
+           WHEN m30.tipoTrocaSimulacao REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN DATE(m30.tipoTrocaSimulacao)
+       END AS data_negociacao,
+       m56.pagamentoParcelasAprovacao AS cod_forma_pagamento,
+       m56.pagamentoParcelasAprovacaoDesc AS forma_pagamento,
+       m56.situacaoParcelasAprovacaoDesc AS evento,
+       COALESCE(NULLIF(m56.qtdParcelasAprovacao, ''), '1') AS parcelas,
+       m56.sequenciaParcelasAprovacao AS sequencia_parcelas,
+       m56.retencao AS retencao,
+       m56.taxaFinanciamento AS taxa_financiamento,
+       CASE
+           WHEN m56.dataParcelasAprovacao REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN DATE(m56.dataParcelasAprovacao)
+       END AS data_parcela,
+       CAST(NULLIF(REPLACE(REPLACE(REGEXP_REPLACE(m56.valorParcelasAprovacao, '[^0-9,.-]', ''), '.', ''), ',', '.') , '') AS DECIMAL(15, 2)) AS valor_parcelas,
+       CASE
+           WHEN m56.percentualParcelasAprovacao = '' THEN NULL
+           ELSE CAST(m56.percentualParcelasAprovacao AS DECIMAL(6, 2))
+       END AS percentual_parcelas,
+       COALESCE(NULLIF(m56.carenciaParcelasAprovacao, ''), '0') AS carencia,
+       CAST(NULLIF(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.-]', ''), '.', ''), ',', '.') , '') AS DECIMAL(15, 2)) AS valor_final,
+       m30.estadoInstalacao AS estado,
+       m30.cidadeInstalacaoDesc AS cidade,
+	   CASE 
+	        WHEN m30.estadoInstalacao IN ('AC','AM','AP','PA','RO','RR','TO') THEN 'Norte'
+	        WHEN m30.estadoInstalacao IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
+	        WHEN m30.estadoInstalacao IN ('DF','GO','MT','MS') THEN 'Centro-Oeste'
+	        WHEN m30.estadoInstalacao IN ('ES','MG','RJ','SP') THEN 'Sudeste'
+	        WHEN m30.estadoInstalacao IN ('PR','RS','SC') THEN 'Sul'
+	    ELSE 'Região não identificada'
+	   END AS regiao,
+       CASE
+           WHEN TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
+           WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) <> '' THEN TRIM(m30.marcaInversorPromocaoDesc)
+           ELSE 'Venda Avulsa'
+       END AS tipo_inversor,
+       CASE
+           WHEN m30.atividade = '15' THEN 'Sim'
+           ELSE 'Não'
+       END AS retirar_finalizarperdida,
+       NOW() AS data_stamp
+FROM ML001030 m30
+JOIN DOCUMENTO d ON d.COD_REG_LISTA = m30.ID
+JOIN ML001056 m56 ON m56.companyid = m30.companyid
+AND m56.masterid = m30.ID
+WHERE d.COD_EMPRESA = 1
+  AND d.COD_LISTA = 30
+  AND d.VERSAO_ATIVA = 1
+  AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
+  AND m30.atividadeDesc <> ''
+  AND m30.proposta <> '00000NaN';
