@@ -1,3 +1,4 @@
+
 SELECT
 	m30.proposta AS PROPOSTA,
 	m30.entradaImputado AS filial,
@@ -66,8 +67,13 @@ WHERE 1 = 1
     AND d.COD_EMPRESA = 1
     AND d.COD_LISTA = 30
     AND d.VERSAO_ATIVA = 1
-    AND m30.atividade <> '15'
     AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
-	
-	
-	
+    AND m30.atividadeDesc IN ('Liberado Financeiro', 'Finalizado Comercial')
+    AND m30.atividadeDesc <> 'Finalizar Perdida'
+    
+    
+    
+    
+    
+    
+    
