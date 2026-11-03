@@ -20,8 +20,8 @@ SELECT m30.proposta AS PROPOSTA,
        CASE
            WHEN m30.tipoTrocaSimulacao REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN DATE(m30.tipoTrocaSimulacao)
        END AS data_negociacao,
-       CASE
-           WHEN m30.potenciaSimul REGEXP '[0-9]' THEN CAST(REGEXP_REPLACE(m30.potenciaSimul, '[^0-9.-]', '') AS DECIMAL(6, 2))
+       CASE WHEN m30.potenciaSimul REGEXP '[0-9]'
+            THEN CAST(TRIM(m30.potenciaSimul) + 0 AS DECIMAL(10,2))
        END AS POTENCIA,
        m30.vendedor_protheus AS VENDEDOR_PROTHEUS,
        m30.executivo_protheus AS EXECUTIVO_PROTHEUS,
