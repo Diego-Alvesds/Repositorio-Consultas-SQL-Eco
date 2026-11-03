@@ -56,9 +56,9 @@ SELECT m30.proposta AS PROPOSTA,
        m30.produto_protheus AS Codigo_Produto,
        m30.tensao AS Tensao,
        m30.abrigo AS ABRIGO,
-       CASE
-           WHEN m30.potenciaSimul REGEXP '[0-9]' THEN CAST(REGEXP_REPLACE(m30.potenciaSimul, '[^0-9.-]', '') AS DECIMAL(10, 2))
-       END AS POTENCIA,
+	   CASE WHEN m30.potenciaSimul REGEXP '[0-9]'
+     		THEN CAST(TRIM(m30.potenciaSimul) + 0 AS DECIMAL(10,2))
+	   END AS POTENCIA,
        m30.geracaoSimul AS GERACAO,
        m30.inversoresSimul AS INVERSORES,
        m30.modulosSimulDesc AS MODULOS,
