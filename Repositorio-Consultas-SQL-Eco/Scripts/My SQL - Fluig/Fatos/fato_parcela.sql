@@ -20,8 +20,8 @@ SELECT m30.entradaImputado AS filial,
        m30.codigoUnidade AS cod_unidade,
        m30.descricaoUnidade AS unidade,
        m30.executivo_protheus AS cod_executivo_protheus,
-       CASE
-           WHEN m30.potenciaSimul REGEXP '[0-9]' THEN CAST(REGEXP_REPLACE(m30.potenciaSimul, '[^0-9.-]', '') AS DECIMAL(6, 2))
+       CASE WHEN m30.potenciaSimul REGEXP '[0-9]'
+            THEN CAST(TRIM(m30.potenciaSimul) + 0 AS DECIMAL(10,2))
        END AS potencia,
        CASE
            WHEN m30.tipoTrocaSimulacao REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN DATE(m30.tipoTrocaSimulacao)
@@ -45,14 +45,14 @@ SELECT m30.entradaImputado AS filial,
        CAST(NULLIF(REPLACE(REPLACE(REGEXP_REPLACE(m30.valorASerPago, '[^0-9,.-]', ''), '.', ''), ',', '.') , '') AS DECIMAL(15, 2)) AS valor_final,
        m30.estadoInstalacao AS estado,
        m30.cidadeInstalacaoDesc AS cidade,
-	   CASE 
-	        WHEN m30.estadoInstalacao IN ('AC','AM','AP','PA','RO','RR','TO') THEN 'Norte'
-	        WHEN m30.estadoInstalacao IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
-	        WHEN m30.estadoInstalacao IN ('DF','GO','MT','MS') THEN 'Centro-Oeste'
-	        WHEN m30.estadoInstalacao IN ('ES','MG','RJ','SP') THEN 'Sudeste'
-	        WHEN m30.estadoInstalacao IN ('PR','RS','SC') THEN 'Sul'
-	    ELSE 'Região não identificada'
-	   END AS regiao,
+       CASE 
+            WHEN m30.estadoInstalacao IN ('AC','AM','AP','PA','RO','RR','TO') THEN 'Norte'
+            WHEN m30.estadoInstalacao IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
+            WHEN m30.estadoInstalacao IN ('DF','GO','MT','MS') THEN 'Centro-Oeste'
+            WHEN m30.estadoInstalacao IN ('ES','MG','RJ','SP') THEN 'Sudeste'
+            WHEN m30.estadoInstalacao IN ('PR','RS','SC') THEN 'Sul'
+        ELSE 'Região não identificada'
+       END AS regiao,
        CASE
            WHEN TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
            WHEN TRIM(IFNULL(m30.marcaInversorPromocaoDesc, '')) <> '' THEN TRIM(m30.marcaInversorPromocaoDesc)
