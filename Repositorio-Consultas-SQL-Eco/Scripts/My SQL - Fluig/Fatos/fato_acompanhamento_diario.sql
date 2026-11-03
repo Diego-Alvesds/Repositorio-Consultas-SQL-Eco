@@ -21,19 +21,19 @@ SELECT m30.proposta AS proposta,
        m30.descricaoUnidade AS unidade,
        m30.cidadeInstalacaoDesc AS cidade,
        m30.estadoInstalacao AS estado,
-	   CASE 
-	        WHEN m30.estadoInstalacao IN ('AC','AM','AP','PA','RO','RR','TO')           THEN 'Norte'
-	        WHEN m30.estadoInstalacao IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
-	        WHEN m30.estadoInstalacao IN ('DF','GO','MT','MS')                          THEN 'Centro-Oeste'
-	        WHEN m30.estadoInstalacao IN ('ES','MG','RJ','SP')                          THEN 'Sudeste'
-	        WHEN m30.estadoInstalacao IN ('PR','RS','SC')                               THEN 'Sul'
-	        ELSE 'Região não identificada'
-	   END AS regiao,
+       CASE 
+            WHEN m30.estadoInstalacao IN ('AC','AM','AP','PA','RO','RR','TO')           THEN 'Norte'
+            WHEN m30.estadoInstalacao IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
+            WHEN m30.estadoInstalacao IN ('DF','GO','MT','MS')                          THEN 'Centro-Oeste'
+            WHEN m30.estadoInstalacao IN ('ES','MG','RJ','SP')                          THEN 'Sudeste'
+            WHEN m30.estadoInstalacao IN ('PR','RS','SC')                               THEN 'Sul'
+            ELSE 'Região não identificada'
+       END AS regiao,
        m30.classe AS classe,
        m30.vendedor_protheus AS vendedor_protheus,
        m30.executivo_protheus AS executivo_protheus,  
-       CASE
-           WHEN m30.potenciaSimul REGEXP '[0-9]' THEN CAST(REGEXP_REPLACE(m30.potenciaSimul, '[^0-9.-]', '') AS DECIMAL(10, 2))
+       CASE WHEN m30.potenciaSimul REGEXP '[0-9]'
+            THEN CAST(TRIM(m30.potenciaSimul) + 0 AS DECIMAL(10,2))
        END AS potencia,
        CASE
            WHEN TRIM(IFNULL(m30.marcaInversorDesc, '')) <> '' THEN TRIM(m30.marcaInversorDesc)
