@@ -18,7 +18,7 @@ WITH handoffs AS
      AND m30.dataCriacao BETWEEN '2022-01-01 00:00:00' AND '2026-12-31 23:59:59'
      AND m112.statusHistoricoDe = 'Avaliar Grandes Obras'
      AND m112.statusHistorico = 'Retorno Grandes Obras'
-     AND m112.matriculaUsuarioHistorico IN ('andre.pereira','bruno.silva','gabriela.martins','joao.perez','jose.lima','marcos.messias','supermauro','najara.deus','richard.rodrigues')),
+     AND m112.matriculaUsuarioHistorico IN ('andre.pereira','bruno.silva','gabriela.martins','joao.perez','jose.lima','marcos.messias','mauro.menossi','najara.deus','richard.rodrigues')),
      ranked AS
   (SELECT unidade,
           cod_unidade,
